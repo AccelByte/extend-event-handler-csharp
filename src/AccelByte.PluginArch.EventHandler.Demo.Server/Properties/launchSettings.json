@@ -1,0 +1,13 @@
+﻿{
+  "profiles": {
+    "AccelByte.PluginArch.EventHandler.Demo.Server": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": false,
+      "applicationUrl": "http://localhost:5036;https://localhost:7270",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

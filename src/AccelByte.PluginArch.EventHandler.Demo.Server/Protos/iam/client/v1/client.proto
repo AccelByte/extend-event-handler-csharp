@@ -1,0 +1,416 @@
+// Copyright (c) 2023 AccelByte Inc. All Rights Reserved.
+// This is licensed software from AccelByte Inc, for limitations
+// and restrictions contact your company contract manager.
+
+// source: IAM/AsyncAPI/client.yaml (0.1.0)
+
+syntax = "proto3";
+
+package accelbyte.iam.client.v1;
+// Version v1.0.0
+
+// --- imports ---
+
+import "google/protobuf/empty.proto";
+
+
+// --- options ---
+
+option csharp_namespace = "AccelByte.IAM.Client";
+option go_package = "accelbyte.net/iam/client";
+option java_multiple_files = true;
+option java_package = "net.accelbyte.iam.client";
+
+// --- schema objects ---
+
+// path: #/components/schemas/event
+message Event {
+    string id = 1;
+    int64 version = 2;
+    string name = 3;
+    string namespace = 4;
+    string parentNamespace = 5;
+    string timestamp = 6;
+    string clientId = 7;
+    string userId = 8;
+    string traceId = 9;
+    string sessionId = 10;
+}
+
+// path: #/components/schemas/permissions
+message Permissions {
+    string resoure = 1;
+    string action = 2;
+    int64 schedAction = 3;
+    string schedCron = 4;
+    repeated string schedRange = 5;
+}
+
+// path: #/components/schemas/client
+message Client {
+    string clientId = 1;
+    string name = 2;
+    string clientType = 3;
+    string baseUri = 4;
+    string redirectUri = 5;
+    string secret = 6;
+    repeated string audiences = 7;
+    string clientPlatform = 8;
+    bool twoFactorEnabled = 9;
+    string namespace = 10;
+}
+
+// path: #/components/schemas/clientCreateObj
+message ClientCreateObj {
+    string clientId = 1;
+    string name = 2;
+    string clientType = 3;
+    string baseUri = 4;
+    string redirectUri = 5;
+    string secret = 6;
+    repeated string audiences = 7;
+    string clientPlatform = 8;
+    bool twoFactorEnabled = 9;
+    string namespace = 10;
+    string parentNamespace = 11;
+}
+
+// path: #/components/schemas/clientThirdParty
+message ClientThirdParty {
+    string platformId = 1;
+    string appId = 2;
+    string redirectUri = 3;
+    string secret = 4;
+    bool active = 5;
+}
+
+// path: #/components/messages/clientCreated/payload/properties/payload
+message AnonymousSchema1 {
+    ClientCreateObj client = 1;
+}
+
+// path: #/components/messages/clientCreated/payload
+message ClientCreated {
+    AnonymousSchema1 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/clientDeleted/payload/properties/payload
+message AnonymousSchema2 {
+    Client client = 1;
+}
+
+// path: #/components/messages/clientDeleted/payload
+message ClientDeleted {
+    AnonymousSchema2 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/clientUpdated/payload/properties/payload
+message AnonymousSchema3 {
+    Client client = 1;
+}
+
+// path: #/components/messages/clientUpdated/payload
+message ClientUpdated {
+    AnonymousSchema3 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/clientPermissionsCreated/payload/properties/payload
+message AnonymousSchema4 {
+    Client client = 1;
+    repeated Permissions permissions = 2;
+}
+
+// path: #/components/messages/clientPermissionsCreated/payload
+message ClientPermissionsCreated {
+    AnonymousSchema4 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/clientPermissionsDeleted/payload/properties/payload
+message AnonymousSchema5 {
+    Client client = 1;
+    repeated Permissions permissions = 2;
+}
+
+// path: #/components/messages/clientPermissionsDeleted/payload
+message ClientPermissionsDeleted {
+    AnonymousSchema5 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/clientPermissionsUpdated/payload/properties/payload
+message AnonymousSchema6 {
+    Client client = 1;
+    repeated Permissions permissions = 2;
+}
+
+// path: #/components/messages/clientPermissionsUpdated/payload
+message ClientPermissionsUpdated {
+    AnonymousSchema6 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/clientThirdPartyCreated/payload/properties/payload
+message AnonymousSchema7 {
+    Client client = 1;
+    ClientThirdParty clientThirdParty = 2;
+}
+
+// path: #/components/messages/clientThirdPartyCreated/payload
+message ClientThirdPartyCreated {
+    AnonymousSchema7 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/clientThirdPartyDeleted/payload/properties/payload
+message AnonymousSchema8 {
+    Client client = 1;
+    ClientThirdParty clientThirdParty = 2;
+}
+
+// path: #/components/messages/clientThirdPartyDeleted/payload
+message ClientThirdPartyDeleted {
+    AnonymousSchema8 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/clientThirdPartyUpdated/payload/properties/payload
+message AnonymousSchema9 {
+    Client client = 1;
+    ClientThirdParty clientThirdParty = 2;
+}
+
+// path: #/components/messages/clientThirdPartyUpdated/payload
+message ClientThirdPartyUpdated {
+    AnonymousSchema9 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+
+// --- #/components/messages/{message_name} ---
+
+// path: #/components/messages/clientCreated
+message ClientCreatedMessage {
+    ClientCreated payload = 1;
+}
+
+// path: #/components/messages/clientDeleted
+message ClientDeletedMessage {
+    ClientDeleted payload = 1;
+}
+
+// path: #/components/messages/clientUpdated
+message ClientUpdatedMessage {
+    ClientUpdated payload = 1;
+}
+
+// path: #/components/messages/clientPermissionsCreated
+message ClientPermissionsCreatedMessage {
+    ClientPermissionsCreated payload = 1;
+}
+
+// path: #/components/messages/clientPermissionsDeleted
+message ClientPermissionsDeletedMessage {
+    ClientPermissionsDeleted payload = 1;
+}
+
+// path: #/components/messages/clientPermissionsUpdated
+message ClientPermissionsUpdatedMessage {
+    ClientPermissionsUpdated payload = 1;
+}
+
+// path: #/components/messages/clientThirdPartyCreated
+message ClientThirdPartyCreatedMessage {
+    ClientThirdPartyCreated payload = 1;
+}
+
+// path: #/components/messages/clientThirdPartyDeleted
+message ClientThirdPartyDeletedMessage {
+    ClientThirdPartyDeleted payload = 1;
+}
+
+// path: #/components/messages/clientThirdPartyUpdated
+message ClientThirdPartyUpdatedMessage {
+    ClientThirdPartyUpdated payload = 1;
+}
+
+
+// --- #/channels/{channel_name}/{operation_type}/message ---
+
+// path: #/channels/client/publish/message
+message ClientPublish {
+    oneof payload {
+        ClientCreated variant0 = 1;
+        ClientDeleted variant1 = 2;
+        ClientUpdated variant2 = 3;
+    }
+}
+
+// path: #/channels/clientThirdParty/publish/message
+message ClientThirdPartyPublish {
+    oneof payload {
+        ClientThirdPartyCreated variant0 = 1;
+        ClientThirdPartyDeleted variant1 = 2;
+        ClientThirdPartyUpdated variant2 = 3;
+    }
+}
+
+// path: #/channels/clientPermissions/publish/message
+message ClientPermissionsPublish {
+    oneof payload {
+        ClientPermissionsCreated variant0 = 1;
+        ClientPermissionsDeleted variant1 = 2;
+        ClientPermissionsUpdated variant2 = 3;
+    }
+}
+
+
+// --- service ---
+
+
+// Publishes a ClientCreated to the Client channel. (oneOf variant) (client ClientCreated)
+service ClientClientCreatedService {
+    rpc OnMessage(ClientCreated) returns (google.protobuf.Empty);
+}
+
+// Publishes a ClientDeleted to the Client channel. (oneOf variant) (client ClientDeleted)
+service ClientClientDeletedService {
+    rpc OnMessage(ClientDeleted) returns (google.protobuf.Empty);
+}
+
+// Publishes a ClientUpdated to the Client channel. (oneOf variant) (client ClientUpdated)
+service ClientClientUpdatedService {
+    rpc OnMessage(ClientUpdated) returns (google.protobuf.Empty);
+}
+
+// Publishes a ClientThirdPartyCreated to the Client Third Party channel. (oneOf variant) (clientThirdParty ClientThirdPartyCreated)
+service ClientThirdPartyClientThirdPartyCreatedService {
+    rpc OnMessage(ClientThirdPartyCreated) returns (google.protobuf.Empty);
+}
+
+// Publishes a ClientThirdPartyDeleted to the Client Third Party channel. (oneOf variant) (clientThirdParty ClientThirdPartyDeleted)
+service ClientThirdPartyClientThirdPartyDeletedService {
+    rpc OnMessage(ClientThirdPartyDeleted) returns (google.protobuf.Empty);
+}
+
+// Publishes a ClientThirdPartyUpdated to the Client Third Party channel. (oneOf variant) (clientThirdParty ClientThirdPartyUpdated)
+service ClientThirdPartyClientThirdPartyUpdatedService {
+    rpc OnMessage(ClientThirdPartyUpdated) returns (google.protobuf.Empty);
+}
+
+// Publishes a ClientPermissionsCreated to the Client Permissions channel. (oneOf variant) (clientPermissions ClientPermissionsCreated)
+service ClientPermissionsClientPermissionsCreatedService {
+    rpc OnMessage(ClientPermissionsCreated) returns (google.protobuf.Empty);
+}
+
+// Publishes a ClientPermissionsDeleted to the Client Permissions channel. (oneOf variant) (clientPermissions ClientPermissionsDeleted)
+service ClientPermissionsClientPermissionsDeletedService {
+    rpc OnMessage(ClientPermissionsDeleted) returns (google.protobuf.Empty);
+}
+
+// Publishes a ClientPermissionsUpdated to the Client Permissions channel. (oneOf variant) (clientPermissions ClientPermissionsUpdated)
+service ClientPermissionsClientPermissionsUpdatedService {
+    rpc OnMessage(ClientPermissionsUpdated) returns (google.protobuf.Empty);
+}
