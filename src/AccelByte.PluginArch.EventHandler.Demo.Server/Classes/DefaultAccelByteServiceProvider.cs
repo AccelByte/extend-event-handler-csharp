@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 
 using AccelByte.Sdk.Core;
 using AccelByte.Sdk.Feature.LocalTokenValidation;
+using AccelByte.Sdk.Feature.AutoTokenRefresh;
 
 namespace AccelByte.PluginArch.EventHandler.Demo.Server
 {
@@ -28,16 +29,38 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
             AppSettingConfigRepository? abConfig = config.GetSection("AccelByte").Get<AppSettingConfigRepository>();
             if (abConfig == null)
                 throw new Exception("Missing AccelByte configuration section.");
+            abConfig.ReadEnvironmentVariables();
             Config = abConfig;
 
-            Sdk = AccelByteSDK.Builder
-                .SetConfigRepository(Config)
-                .UseDefaultCredentialRepository()
-                .UseDefaultHttpClient()
-                .UseDefaultTokenRepository()
-                .UseLocalTokenValidator()
-                .UseAutoRefreshForTokenRevocationList()
-                .Build();
+            bool enableAuthorization = config.GetValue<bool>("EnableAuthorization");
+            string? strEnableAuth = Environment.GetEnvironmentVariable("PLUGIN_GRPC_SERVER_AUTH_ENABLED");
+            if ((strEnableAuth != null) && (strEnableAuth != String.Empty))
+                enableAuthorization = (strEnableAuth.Trim().ToLower() == "true");
+            
+            if (enableAuthorization)
+            {
+                Sdk = AccelByteSDK.Builder
+                    .SetConfigRepository(Config)
+                    .UseDefaultCredentialRepository()
+                    .UseDefaultHttpClient()
+                    .UseDefaultTokenRepository()
+                    .UseLocalTokenValidator()
+                    .UseAutoRefreshForTokenRevocationList()
+                    .UseAutoTokenRefresh()
+                    .Build();
+            }
+            else
+            {
+                Sdk = AccelByteSDK.Builder
+                    .SetConfigRepository(Config)
+                    .UseDefaultCredentialRepository()
+                    .UseDefaultHttpClient()
+                    .UseDefaultTokenRepository()
+                    .UseAutoTokenRefresh()
+                    .Build();
+            }
+
+            Sdk.LoginClient();            
         }
     }
 }

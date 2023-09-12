@@ -38,12 +38,14 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server.Services
         public override Task<Empty> OnMessage(UserLoggedIn request, ServerCallContext context)
         {
             string targetNamespace = _ABProvider.Sdk.Namespace;
+            _Logger.LogInformation($"NS Target: {targetNamespace}, Request: {request.Namespace}");
+            _Logger.LogInformation($"Log in UserId: {request.UserId}");
 
             //if user doesn't login for the same namespace as the plugin
             if (request.Namespace != targetNamespace)
                 return Task.FromResult(new Empty());
             
-            _ABProvider.Sdk.Platform.Entitlement.GrantUserEntitlementOp
+            var newEntitlement = _ABProvider.Sdk.Platform.Entitlement.GrantUserEntitlementOp
                 .SetBody(new List<EntitlementGrant>()
                 {
                     new EntitlementGrant()
@@ -55,6 +57,11 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server.Services
                     }
                 })
                 .Execute(targetNamespace, request.UserId);
+            if (newEntitlement != null)
+            {
+                foreach (var entitlementItem in newEntitlement)
+                    _Logger.LogInformation($"EntitlementId: {entitlementItem.Id!}");
+            }
 
             return Task.FromResult(new Empty());
         }

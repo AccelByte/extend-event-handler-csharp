@@ -28,6 +28,7 @@ using Serilog.Events;
 using Serilog.Sinks.Grafana.Loki;
 
 using Prometheus;
+using AccelByte.PluginArch.EventHandler.Demo.Server.Services;
 
 namespace AccelByte.PluginArch.EventHandler.Demo.Server
 {
@@ -126,7 +127,7 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
             var app = builder.Build();
             app.UseGrpcMetrics();
 
-            //app.MapGrpcService<RevocationFunctionService>();
+            app.MapGrpcService<UserLoggedInService>();
             app.MapGrpcReflectionService();
             app.MapGrpcHealthChecksService();
             app.MapMetrics();
