@@ -32,5 +32,16 @@ imagex_push:
 	docker buildx rm --keep-state $(BUILDER)
 
 test:
-	docker run --rm -u $$(id -u):$$(id -g) -v $$(pwd):/data/ -w /data/src -e HOME="/data" -e DOTNET_CLI_HOME="/data" mcr.microsoft.com/dotnet/sdk:$(DOTNETVER) \
-			dotnet test
+	@test -n "$(AB_CLIENT_ID)" || (echo "AB_CLIENT_ID is not set"; exit 1)
+	@test -n "$(AB_CLIENT_SECRET)" || (echo "AB_CLIENT_SECRET is not set"; exit 1)
+	@test -n "$(AB_BASE_URL)" || (echo "AB_BASE_URL is not set"; exit 1)
+	@test -n "$(AB_NAMESPACE)" || (echo "AB_NAMESPACE is not set"; exit 1)
+	@test -n "$(PLUGIN_GRPC_SERVER_AUTH_ENABLED)" || (echo "PLUGIN_GRPC_SERVER_AUTH_ENABLED is not set"; exit 1)
+	docker run --rm -u $$(id -u):$$(id -g) -v $$(pwd):/data/ -w /data/src -e HOME="/data" -e DOTNET_CLI_HOME="/data" \
+		-e AB_CLIENT_ID=$(AB_CLIENT_ID) \
+		-e AB_BASE_URL=$(AB_BASE_URL) \
+		-e AB_CLIENT_SECRET=$(AB_CLIENT_SECRET) \
+		-e AB_NAMESPACE=$(AB_NAMESPACE) \
+		-e PLUGIN_GRPC_SERVER_AUTH_ENABLED=$(PLUGIN_GRPC_SERVER_AUTH_ENABLED) \
+		mcr.microsoft.com/dotnet/sdk:$(DOTNETVER) \
+		dotnet test
