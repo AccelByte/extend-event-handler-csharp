@@ -245,7 +245,7 @@ integration test with `AccelByte Gaming Services`. Here, we are going to deploy 
 
 1. Download and setup [extend-helper-cli](https://github.com/AccelByte/extend-helper-cli/)
 
-2. Create event handler app, please refer to the docs in [here](https://docs.accelbyte.io/gaming-services/services/extend/)
+2. Create event handler app, please refer to the docs in [here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/getting-started-event-handler/#register-and-integrate-extend-sample-app-to-ags)
 
 3. Do a docker login using `extend-helper-cli`, please refer to its documentation
 
