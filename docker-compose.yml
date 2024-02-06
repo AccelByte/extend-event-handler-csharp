@@ -7,15 +7,15 @@ services:
       - 6565:6565
       - 8080:8080
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans # Zipkin
-      - ASPNETCORE_SERILOG_LOKI=http://host.docker.internal:3100
-      - AB_BASE_URL
-      - AB_CLIENT_ID
-      - AB_CLIENT_SECRET
-      - AB_NAMESPACE
+      - AB_BASE_URL=${AB_BASE_URL?}
+      - AB_CLIENT_ID=${AB_CLIENT_ID?}
+      - AB_CLIENT_SECRET=${AB_CLIENT_SECRET?}
+      - AB_NAMESPACE=${AB_NAMESPACE?}
+      - ITEM_ID_TO_GRANT=${ITEM_ID_TO_GRANT?}
       - PLUGIN_GRPC_SERVER_AUTH_ENABLED
-      - ITEM_ID_TO_GRANT
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_SERILOG_LOKI=http://host.docker.internal:3100
+      - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans   # Zipkin
     extra_hosts:
       - host.docker.internal:host-gateway
     # logging:
