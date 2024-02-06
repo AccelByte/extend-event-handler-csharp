@@ -12,7 +12,6 @@ services:
       - AB_CLIENT_SECRET=${AB_CLIENT_SECRET?}
       - AB_NAMESPACE=${AB_NAMESPACE?}
       - ITEM_ID_TO_GRANT=${ITEM_ID_TO_GRANT?}
-      - PLUGIN_GRPC_SERVER_AUTH_ENABLED
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_SERILOG_LOKI=http://host.docker.internal:3100
       - OTEL_EXPORTER_ZIPKIN_ENDPOINT=http://host.docker.internal:9411/api/v2/spans   # Zipkin

@@ -32,33 +32,13 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
             abConfig.ReadEnvironmentVariables();
             Config = abConfig;
 
-            bool enableAuthorization = config.GetValue<bool>("EnableAuthorization");
-            string? strEnableAuth = Environment.GetEnvironmentVariable("PLUGIN_GRPC_SERVER_AUTH_ENABLED");
-            if ((strEnableAuth != null) && (strEnableAuth != String.Empty))
-                enableAuthorization = (strEnableAuth.Trim().ToLower() == "true");
-            
-            if (enableAuthorization)
-            {
-                Sdk = AccelByteSDK.Builder
-                    .SetConfigRepository(Config)
-                    .UseDefaultCredentialRepository()
-                    .UseDefaultHttpClient()
-                    .UseDefaultTokenRepository()
-                    .UseLocalTokenValidator()
-                    .UseAutoRefreshForTokenRevocationList()
-                    .UseAutoTokenRefresh()
-                    .Build();
-            }
-            else
-            {
-                Sdk = AccelByteSDK.Builder
-                    .SetConfigRepository(Config)
-                    .UseDefaultCredentialRepository()
-                    .UseDefaultHttpClient()
-                    .UseDefaultTokenRepository()
-                    .UseAutoTokenRefresh()
-                    .Build();
-            }
+            Sdk = AccelByteSDK.Builder
+                .SetConfigRepository(Config)
+                .UseDefaultCredentialRepository()
+                .UseDefaultHttpClient()
+                .UseDefaultTokenRepository()
+                .UseAutoTokenRefresh()
+                .Build();
 
             Sdk.LoginClient();            
         }

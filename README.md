@@ -77,19 +77,14 @@ To be able to run this sample app, you will need to follow these setup steps.
    AB_CLIENT_ID='xxxxxxxxxx'                 # Client ID from the Prerequisites section
    AB_CLIENT_SECRET='xxxxxxxxxx'             # Client Secret from the Prerequisites section
    AB_NAMESPACE='xxxxxxxxxx'                 # Namespace ID from the Prerequisites section
-   PLUGIN_GRPC_SERVER_AUTH_ENABLED=false     # Enable or disable access token and permission verification
    ITEM_ID_TO_GRANT='xxxxxxxxxx'             # Item id from a published store we noted previously
    ```
-
-   > :warning: **Keep PLUGIN_GRPC_SERVER_AUTH_ENABLED=false for now**: It is currently not
-   supported by `AccelByte Gaming Services`, but it will be enabled later on to improve security.
 
 For more options, create `src/AccelByte.PluginArch.EventHandler.Demo.Server/appsettings.Development.json` and fill in the required configuration.
 
 ```json
 {
   "DirectLogToLoki": false,
-  "EnableAuthorization": false,                 // Enable or disable access token and permission check (env var: PLUGIN_GRPC_SERVER_AUTH_ENABLED)
   "RevocationListRefreshPeriod": 60,
   "AccelByte": {
     "BaseUrl": "https://demo.accelbyte.io",     // Base URL (env var: AB_BASE_URL)

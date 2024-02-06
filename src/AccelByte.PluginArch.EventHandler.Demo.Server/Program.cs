@@ -53,11 +53,6 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
             if (appResourceName == null)
                 appResourceName = "EVENTHANDLERDEMOGRPCSERVICE ";
 
-            bool enableAuthorization = builder.Configuration.GetValue<bool>("EnableAuthorization");
-            string? strEnableAuth = Environment.GetEnvironmentVariable("PLUGIN_GRPC_SERVER_AUTH_ENABLED");
-            if ((strEnableAuth != null) && (strEnableAuth != String.Empty))
-                enableAuthorization = (strEnableAuth.Trim().ToLower() == "true");
-
             bool directLogToLoki = builder.Configuration.GetValue<bool>("DirectLogToLoki");
             if (directLogToLoki)
             {
@@ -119,8 +114,6 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
             {
                 opts.Interceptors.Add<ExceptionHandlingInterceptor>();
                 opts.Interceptors.Add<DebugLoggerServerInterceptor>();
-                if (enableAuthorization)
-                    opts.Interceptors.Add<AuthorizationInterceptor>();
             });
             builder.Services.AddGrpcReflection();
 
