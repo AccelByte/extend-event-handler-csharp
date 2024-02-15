@@ -422,3 +422,7 @@ Thumbs.db
 
 # Local Env File
 .env
+
+.dotnet/
+.nuget/
+NuGet/
