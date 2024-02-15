@@ -1,4 +1,4 @@
-// Copyright (c) 2023 AccelByte Inc. All Rights Reserved.
+// Copyright (c) 2024 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -52,12 +52,39 @@ message UserAuthentication {
     bool refresh = 2;
 }
 
+// path: #/components/schemas/userAuthenticationFailed
+message UserAuthenticationFailed {
+    string category = 1;
+    string clientName = 2;
+    string country = 3;
+    string detail = 4;
+    string platform = 5;
+}
+
 // path: #/components/schemas/userAccount
 message UserAccount {
     string userId = 1;
     string emailAddress = 2;
-    string country = 3;
-    string namespace = 4;
+    string userName = 3;
+    string country = 4;
+    string namespace = 5;
+}
+
+// path: #/components/schemas/userTestAccount/properties/gameData/items
+message AnonymousSchema1 {
+    string gameUserId = 1;
+    string gameNamespace = 2;
+}
+
+// path: #/components/schemas/userTestAccount
+message UserTestAccount {
+    string userId = 1;
+    string emailAddress = 2;
+    string userName = 3;
+    string country = 4;
+    string namespace = 5;
+    bool testAccount = 6;
+    repeated AnonymousSchema1 gameData = 7;
 }
 
 // path: #/components/schemas/userGameAccount
@@ -66,6 +93,7 @@ message UserGameAccount {
     string emailAddress = 2;
     string gameNamespace = 3;
     string country = 4;
+    bool testAccount = 5;
 }
 
 // path: #/components/schemas/userAccountStatus
@@ -76,7 +104,7 @@ message UserAccountStatus {
 }
 
 // path: #/components/schemas/userAccountBan/properties/ban/items
-message AnonymousSchema1 {
+message AnonymousSchema2 {
     string banId = 1;
     string targetNamespace = 2;
     string targetUserId = 3;
@@ -88,7 +116,7 @@ message AnonymousSchema1 {
 
 // path: #/components/schemas/userAccountBan
 message UserAccountBan {
-    repeated AnonymousSchema1 ban = 1;
+    repeated AnonymousSchema2 ban = 1;
 }
 
 // path: #/components/schemas/userInformation
@@ -98,6 +126,7 @@ message UserInformation {
     string country = 3;
     string language = 4;
     string dateOfBirth = 5;
+    string uniqueDisplayName = 6;
 }
 
 // path: #/components/schemas/role
@@ -127,6 +156,7 @@ message Platform {
     string gameNamespace = 1;
     string gameUserId = 2;
     string country = 3;
+    bool testAccount = 4;
 }
 
 // path: #/components/schemas/userFeatureBan
@@ -159,6 +189,7 @@ message UserAccountLink {
     string namespace = 1;
     string userId = 2;
     string emailAddress = 3;
+    bool testAccount = 4;
 }
 
 // path: #/components/schemas/userAccountUnlink
@@ -167,6 +198,7 @@ message UserAccountUnlink {
     string emailAddress = 2;
     string targetNamespace = 3;
     string targetUserId = 4;
+    bool testAccount = 5;
 }
 
 // path: #/components/schemas/userAccountUpgrade
@@ -175,11 +207,19 @@ message UserAccountUpgrade {
     string emailAddress = 2;
     string publisherUserId = 3;
     string namespace = 4;
+    bool testAccount = 5;
+}
+
+// path: #/components/schemas/userAccountTypeChange
+message UserAccountTypeChange {
+    string userId = 1;
+    string namespace = 2;
+    bool testAccount = 3;
 }
 
 // path: #/components/messages/userAccountCreated/payload/properties/payload
-message AnonymousSchema2 {
-    UserAccount userAccount = 1;
+message AnonymousSchema3 {
+    UserTestAccount userAccount = 1;
     UserAccountStatus userAccountStatus = 2;
     string namespace = 3;
     string userId = 4;
@@ -187,31 +227,6 @@ message AnonymousSchema2 {
 
 // path: #/components/messages/userAccountCreated/payload
 message UserAccountCreated {
-    AnonymousSchema2 payload = 1;
-
-    // allOf(#/components/schemas/event)
-    string id = 2;
-    int64 version = 3;
-    string name = 4;
-    string namespace = 5;
-    string parentNamespace = 6;
-    string timestamp = 7;
-    string clientId = 8;
-    string userId = 9;
-    string traceId = 10;
-    string sessionId = 11;
-}
-
-// path: #/components/messages/userAccountDeleted/payload/properties/payload
-message AnonymousSchema3 {
-    UserAccount userAccount = 1;
-    UserAccountStatus userAccountStatus = 2;
-    string namespace = 3;
-    string userId = 4;
-}
-
-// path: #/components/messages/userAccountDeleted/payload
-message UserAccountDeleted {
     AnonymousSchema3 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -227,16 +242,16 @@ message UserAccountDeleted {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userAccountEnabled/payload/properties/payload
+// path: #/components/messages/userAccountDeleted/payload/properties/payload
 message AnonymousSchema4 {
-    UserAccount userAccount = 1;
+    UserTestAccount userAccount = 1;
     UserAccountStatus userAccountStatus = 2;
     string namespace = 3;
     string userId = 4;
 }
 
-// path: #/components/messages/userAccountEnabled/payload
-message UserAccountEnabled {
+// path: #/components/messages/userAccountDeleted/payload
+message UserAccountDeleted {
     AnonymousSchema4 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -252,7 +267,7 @@ message UserAccountEnabled {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userAccountDisabled/payload/properties/payload
+// path: #/components/messages/userAccountEnabled/payload/properties/payload
 message AnonymousSchema5 {
     UserAccount userAccount = 1;
     UserAccountStatus userAccountStatus = 2;
@@ -260,8 +275,8 @@ message AnonymousSchema5 {
     string userId = 4;
 }
 
-// path: #/components/messages/userAccountDisabled/payload
-message UserAccountDisabled {
+// path: #/components/messages/userAccountEnabled/payload
+message UserAccountEnabled {
     AnonymousSchema5 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -277,7 +292,7 @@ message UserAccountDisabled {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userAccountEmailUpdated/payload/properties/payload
+// path: #/components/messages/userAccountDisabled/payload/properties/payload
 message AnonymousSchema6 {
     UserAccount userAccount = 1;
     UserAccountStatus userAccountStatus = 2;
@@ -285,8 +300,8 @@ message AnonymousSchema6 {
     string userId = 4;
 }
 
-// path: #/components/messages/userAccountEmailUpdated/payload
-message UserAccountEmailUpdated {
+// path: #/components/messages/userAccountDisabled/payload
+message UserAccountDisabled {
     AnonymousSchema6 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -302,16 +317,16 @@ message UserAccountEmailUpdated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userAccountPasswordUpdated/payload/properties/payload
+// path: #/components/messages/userAccountEmailUpdated/payload/properties/payload
 message AnonymousSchema7 {
-    UserAccount userAccount = 1;
+    UserTestAccount userAccount = 1;
     UserAccountStatus userAccountStatus = 2;
     string namespace = 3;
     string userId = 4;
 }
 
-// path: #/components/messages/userAccountPasswordUpdated/payload
-message UserAccountPasswordUpdated {
+// path: #/components/messages/userAccountEmailUpdated/payload
+message UserAccountEmailUpdated {
     AnonymousSchema7 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -327,14 +342,16 @@ message UserAccountPasswordUpdated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userAccountBanned/payload/properties/payload
+// path: #/components/messages/userAccountPasswordUpdated/payload/properties/payload
 message AnonymousSchema8 {
-    UserAccount userAccount = 1;
-    UserAccountBan userAccountBan = 2;
+    UserTestAccount userAccount = 1;
+    UserAccountStatus userAccountStatus = 2;
+    string namespace = 3;
+    string userId = 4;
 }
 
-// path: #/components/messages/userAccountBanned/payload
-message UserAccountBanned {
+// path: #/components/messages/userAccountPasswordUpdated/payload
+message UserAccountPasswordUpdated {
     AnonymousSchema8 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -350,14 +367,14 @@ message UserAccountBanned {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userAccountUnbanned/payload/properties/payload
+// path: #/components/messages/userAccountBanned/payload/properties/payload
 message AnonymousSchema9 {
-    UserAccount userAccount = 1;
+    UserTestAccount userAccount = 1;
     UserAccountBan userAccountBan = 2;
 }
 
-// path: #/components/messages/userAccountUnbanned/payload
-message UserAccountUnbanned {
+// path: #/components/messages/userAccountBanned/payload
+message UserAccountBanned {
     AnonymousSchema9 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -373,16 +390,14 @@ message UserAccountUnbanned {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userAccountVerified/payload/properties/payload
+// path: #/components/messages/userAccountUnbanned/payload/properties/payload
 message AnonymousSchema10 {
-    UserAccount userAccount = 1;
-    UserAccountStatus userAccountStatus = 2;
-    string namespace = 3;
-    string userId = 4;
+    UserTestAccount userAccount = 1;
+    UserAccountBan userAccountBan = 2;
 }
 
-// path: #/components/messages/userAccountVerified/payload
-message UserAccountVerified {
+// path: #/components/messages/userAccountUnbanned/payload
+message UserAccountUnbanned {
     AnonymousSchema10 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -398,14 +413,16 @@ message UserAccountVerified {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userAccountLinked/payload/properties/payload
+// path: #/components/messages/userAccountVerified/payload/properties/payload
 message AnonymousSchema11 {
-    UserAccountLink userAccount = 1;
-    UserAccountThirdParty userAccountThirdParty = 2;
+    UserAccount userAccount = 1;
+    UserAccountStatus userAccountStatus = 2;
+    string namespace = 3;
+    string userId = 4;
 }
 
-// path: #/components/messages/userAccountLinked/payload
-message UserAccountLinked {
+// path: #/components/messages/userAccountVerified/payload
+message UserAccountVerified {
     AnonymousSchema11 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -421,14 +438,14 @@ message UserAccountLinked {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userAccountUnlinked/payload/properties/payload
+// path: #/components/messages/userAccountLinked/payload/properties/payload
 message AnonymousSchema12 {
-    UserAccountUnlink userAccount = 1;
+    UserAccountLink userAccount = 1;
     UserAccountThirdParty userAccountThirdParty = 2;
 }
 
-// path: #/components/messages/userAccountUnlinked/payload
-message UserAccountUnlinked {
+// path: #/components/messages/userAccountLinked/payload
+message UserAccountLinked {
     AnonymousSchema12 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -444,13 +461,14 @@ message UserAccountUnlinked {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userAccountUpgraded/payload/properties/payload
+// path: #/components/messages/userAccountUnlinked/payload/properties/payload
 message AnonymousSchema13 {
-    UserAccountUpgrade userAccount = 1;
+    UserAccountUnlink userAccount = 1;
+    UserAccountThirdParty userAccountThirdParty = 2;
 }
 
-// path: #/components/messages/userAccountUpgraded/payload
-message UserAccountUpgraded {
+// path: #/components/messages/userAccountUnlinked/payload
+message UserAccountUnlinked {
     AnonymousSchema13 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -466,16 +484,13 @@ message UserAccountUpgraded {
     string sessionId = 11;
 }
 
-// path: #/components/messages/gameUserAccountCreated/payload/properties/payload
+// path: #/components/messages/userAccountUpgraded/payload/properties/payload
 message AnonymousSchema14 {
-    UserGameAccount userAccount = 1;
-    UserAccountStatus userAccountStatus = 2;
-    string namespace = 3;
-    string userId = 4;
+    UserAccountUpgrade userAccount = 1;
 }
 
-// path: #/components/messages/gameUserAccountCreated/payload
-message GameUserAccountCreated {
+// path: #/components/messages/userAccountUpgraded/payload
+message UserAccountUpgraded {
     AnonymousSchema14 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -491,13 +506,16 @@ message GameUserAccountCreated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/gameUserCreated/payload/properties/payload
+// path: #/components/messages/gameUserAccountCreated/payload/properties/payload
 message AnonymousSchema15 {
-    Platform platform = 1;
+    UserGameAccount userAccount = 1;
+    UserAccountStatus userAccountStatus = 2;
+    string namespace = 3;
+    string userId = 4;
 }
 
-// path: #/components/messages/gameUserCreated/payload
-message GameUserCreated {
+// path: #/components/messages/gameUserAccountCreated/payload
+message GameUserAccountCreated {
     AnonymousSchema15 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -513,15 +531,13 @@ message GameUserCreated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/thirdPartyAccountCreated/payload/properties/payload
+// path: #/components/messages/gameUserCreated/payload/properties/payload
 message AnonymousSchema16 {
-    ThirdParty thirdParty = 1;
-    string namespace = 2;
-    string userId = 3;
+    Platform platform = 1;
 }
 
-// path: #/components/messages/thirdPartyAccountCreated/payload
-message ThirdPartyAccountCreated {
+// path: #/components/messages/gameUserCreated/payload
+message GameUserCreated {
     AnonymousSchema16 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -537,14 +553,15 @@ message ThirdPartyAccountCreated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userLoggedIn/payload/properties/payload
+// path: #/components/messages/thirdPartyAccountCreated/payload/properties/payload
 message AnonymousSchema17 {
-    UserAccount userAccount = 1;
-    UserAuthentication userAuthentication = 2;
+    ThirdParty thirdParty = 1;
+    string namespace = 2;
+    string userId = 3;
 }
 
-// path: #/components/messages/userLoggedIn/payload
-message UserLoggedIn {
+// path: #/components/messages/thirdPartyAccountCreated/payload
+message ThirdPartyAccountCreated {
     AnonymousSchema17 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -560,14 +577,13 @@ message UserLoggedIn {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userLoggedOut/payload/properties/payload
+// path: #/components/messages/userAccountTypeChanged/payload/properties/payload
 message AnonymousSchema18 {
-    UserAccount userAccount = 1;
-    UserAuthentication userAuthentication = 2;
+    UserAccountTypeChange userAccount = 1;
 }
 
-// path: #/components/messages/userLoggedOut/payload
-message UserLoggedOut {
+// path: #/components/messages/userAccountTypeChanged/payload
+message UserAccountTypeChanged {
     AnonymousSchema18 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -583,14 +599,14 @@ message UserLoggedOut {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userThirdPartyLoggedIn/payload/properties/payload
+// path: #/components/messages/userLoggedIn/payload/properties/payload
 message AnonymousSchema19 {
     UserAccount userAccount = 1;
     UserAuthentication userAuthentication = 2;
 }
 
-// path: #/components/messages/userThirdPartyLoggedIn/payload
-message UserThirdPartyLoggedIn {
+// path: #/components/messages/userLoggedIn/payload
+message UserLoggedIn {
     AnonymousSchema19 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -606,14 +622,14 @@ message UserThirdPartyLoggedIn {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userInformationCreated/payload/properties/payload
+// path: #/components/messages/userLoggedOut/payload/properties/payload
 message AnonymousSchema20 {
     UserAccount userAccount = 1;
-    UserInformation userInformation = 2;
+    UserAuthentication userAuthentication = 2;
 }
 
-// path: #/components/messages/userInformationCreated/payload
-message UserInformationCreated {
+// path: #/components/messages/userLoggedOut/payload
+message UserLoggedOut {
     AnonymousSchema20 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -629,14 +645,14 @@ message UserInformationCreated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userInformationDisplayNameUpdated/payload/properties/payload
+// path: #/components/messages/userThirdPartyLoggedIn/payload/properties/payload
 message AnonymousSchema21 {
     UserAccount userAccount = 1;
-    UserInformation userInformation = 2;
+    UserAuthentication userAuthentication = 2;
 }
 
-// path: #/components/messages/userInformationDisplayNameUpdated/payload
-message UserInformationDisplayNameUpdated {
+// path: #/components/messages/userThirdPartyLoggedIn/payload
+message UserThirdPartyLoggedIn {
     AnonymousSchema21 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -652,14 +668,14 @@ message UserInformationDisplayNameUpdated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userInformationCountryUpdated/payload/properties/payload
+// path: #/components/messages/userLoginFailed/payload/properties/payload
 message AnonymousSchema22 {
     UserAccount userAccount = 1;
-    UserInformation userInformation = 2;
+    UserAuthenticationFailed userAuthenticationFailed = 2;
 }
 
-// path: #/components/messages/userInformationCountryUpdated/payload
-message UserInformationCountryUpdated {
+// path: #/components/messages/userLoginFailed/payload
+message UserLoginFailed {
     AnonymousSchema22 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -675,14 +691,14 @@ message UserInformationCountryUpdated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userInformationLanguageUpdated/payload/properties/payload
+// path: #/components/messages/userThirdPartyLoginFailed/payload/properties/payload
 message AnonymousSchema23 {
     UserAccount userAccount = 1;
-    UserInformation userInformation = 2;
+    UserAuthenticationFailed userAuthenticationFailed = 2;
 }
 
-// path: #/components/messages/userInformationLanguageUpdated/payload
-message UserInformationLanguageUpdated {
+// path: #/components/messages/userThirdPartyLoginFailed/payload
+message UserThirdPartyLoginFailed {
     AnonymousSchema23 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -698,14 +714,14 @@ message UserInformationLanguageUpdated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userInformationDateOfBirthUpdated/payload/properties/payload
+// path: #/components/messages/userInformationCreated/payload/properties/payload
 message AnonymousSchema24 {
-    UserAccount userAccount = 1;
+    UserTestAccount userAccount = 1;
     UserInformation userInformation = 2;
 }
 
-// path: #/components/messages/userInformationDateOfBirthUpdated/payload
-message UserInformationDateOfBirthUpdated {
+// path: #/components/messages/userInformationCreated/payload
+message UserInformationCreated {
     AnonymousSchema24 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -721,14 +737,14 @@ message UserInformationDateOfBirthUpdated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userPermissionsCreated/payload/properties/payload
+// path: #/components/messages/userInformationDisplayNameUpdated/payload/properties/payload
 message AnonymousSchema25 {
-    UserAccount userAccount = 1;
-    repeated Permissions permissions = 2;
+    UserTestAccount userAccount = 1;
+    UserInformation userInformation = 2;
 }
 
-// path: #/components/messages/userPermissionsCreated/payload
-message UserPermissionsCreated {
+// path: #/components/messages/userInformationDisplayNameUpdated/payload
+message UserInformationDisplayNameUpdated {
     AnonymousSchema25 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -744,14 +760,14 @@ message UserPermissionsCreated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userPermissionsDeleted/payload/properties/payload
+// path: #/components/messages/userInformationCountryUpdated/payload/properties/payload
 message AnonymousSchema26 {
-    UserAccount userAccount = 1;
-    repeated Permissions permissions = 2;
+    UserTestAccount userAccount = 1;
+    UserInformation userInformation = 2;
 }
 
-// path: #/components/messages/userPermissionsDeleted/payload
-message UserPermissionsDeleted {
+// path: #/components/messages/userInformationCountryUpdated/payload
+message UserInformationCountryUpdated {
     AnonymousSchema26 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -767,14 +783,14 @@ message UserPermissionsDeleted {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userRolesCreated/payload/properties/payload
+// path: #/components/messages/userInformationLanguageUpdated/payload/properties/payload
 message AnonymousSchema27 {
-    UserAccount userAccount = 1;
-    repeated Role roles = 2;
+    UserTestAccount userAccount = 1;
+    UserInformation userInformation = 2;
 }
 
-// path: #/components/messages/userRolesCreated/payload
-message UserRolesCreated {
+// path: #/components/messages/userInformationLanguageUpdated/payload
+message UserInformationLanguageUpdated {
     AnonymousSchema27 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -790,14 +806,14 @@ message UserRolesCreated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userRolesDeleted/payload/properties/payload
+// path: #/components/messages/userInformationUsernameUpdated/payload/properties/payload
 message AnonymousSchema28 {
-    UserAccount userAccount = 1;
-    repeated string roles = 2;
+    UserTestAccount userAccount = 1;
+    UserInformation userInformation = 2;
 }
 
-// path: #/components/messages/userRolesDeleted/payload
-message UserRolesDeleted {
+// path: #/components/messages/userInformationUsernameUpdated/payload
+message UserInformationUsernameUpdated {
     AnonymousSchema28 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -813,13 +829,14 @@ message UserRolesDeleted {
     string sessionId = 11;
 }
 
-// path: #/components/messages/countryAgeRestrictionCreated/payload/properties/payload
+// path: #/components/messages/userInformationDateOfBirthUpdated/payload/properties/payload
 message AnonymousSchema29 {
-    CountryAgeRestriction countryAgeRestriction = 1;
+    UserTestAccount userAccount = 1;
+    UserInformation userInformation = 2;
 }
 
-// path: #/components/messages/countryAgeRestrictionCreated/payload
-message CountryAgeRestrictionCreated {
+// path: #/components/messages/userInformationDateOfBirthUpdated/payload
+message UserInformationDateOfBirthUpdated {
     AnonymousSchema29 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -835,13 +852,14 @@ message CountryAgeRestrictionCreated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/countryAgeRestrictionUpdated/payload/properties/payload
+// path: #/components/messages/userPermissionsCreated/payload/properties/payload
 message AnonymousSchema30 {
-    CountryAgeRestriction countryAgeRestriction = 1;
+    UserTestAccount userAccount = 1;
+    repeated Permissions permissions = 2;
 }
 
-// path: #/components/messages/countryAgeRestrictionUpdated/payload
-message CountryAgeRestrictionUpdated {
+// path: #/components/messages/userPermissionsCreated/payload
+message UserPermissionCreated {
     AnonymousSchema30 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -857,13 +875,14 @@ message CountryAgeRestrictionUpdated {
     string sessionId = 11;
 }
 
-// path: #/components/messages/chatAllBanned/payload/properties/payload
+// path: #/components/messages/userPermissionsDeleted/payload/properties/payload
 message AnonymousSchema31 {
-    UserFeatureBan userFeatureBan = 1;
+    UserTestAccount userAccount = 1;
+    repeated Permissions permissions = 2;
 }
 
-// path: #/components/messages/chatAllBanned/payload
-message ChatAllBanned {
+// path: #/components/messages/userPermissionsDeleted/payload
+message UserPermissionDeleted {
     AnonymousSchema31 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -879,13 +898,14 @@ message ChatAllBanned {
     string sessionId = 11;
 }
 
-// path: #/components/messages/chatSendBanned/payload/properties/payload
+// path: #/components/messages/userRolesCreated/payload/properties/payload
 message AnonymousSchema32 {
-    UserFeatureBan userFeatureBan = 1;
+    UserTestAccount userAccount = 1;
+    repeated Role roles = 2;
 }
 
-// path: #/components/messages/chatSendBanned/payload
-message ChatSendBanned {
+// path: #/components/messages/userRolesCreated/payload
+message UserRoleCreated {
     AnonymousSchema32 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -901,13 +921,14 @@ message ChatSendBanned {
     string sessionId = 11;
 }
 
-// path: #/components/messages/leaderboardBanned/payload/properties/payload
+// path: #/components/messages/userRolesDeleted/payload/properties/payload
 message AnonymousSchema33 {
-    UserFeatureBan userFeatureBan = 1;
+    UserTestAccount userAccount = 1;
+    repeated string roles = 2;
 }
 
-// path: #/components/messages/leaderboardBanned/payload
-message LeaderboardBanned {
+// path: #/components/messages/userRolesDeleted/payload
+message UserRoleDeleted {
     AnonymousSchema33 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -923,13 +944,13 @@ message LeaderboardBanned {
     string sessionId = 11;
 }
 
-// path: #/components/messages/statisticsBanned/payload/properties/payload
+// path: #/components/messages/countryAgeRestrictionCreated/payload/properties/payload
 message AnonymousSchema34 {
-    UserFeatureBan userFeatureBan = 1;
+    CountryAgeRestriction countryAgeRestriction = 1;
 }
 
-// path: #/components/messages/statisticsBanned/payload
-message StatisticsBanned {
+// path: #/components/messages/countryAgeRestrictionCreated/payload
+message CountryAgeRestrictionCreated {
     AnonymousSchema34 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -945,13 +966,13 @@ message StatisticsBanned {
     string sessionId = 11;
 }
 
-// path: #/components/messages/orderAndPaymentBanned/payload/properties/payload
+// path: #/components/messages/countryAgeRestrictionUpdated/payload/properties/payload
 message AnonymousSchema35 {
-    UserFeatureBan userFeatureBan = 1;
+    CountryAgeRestriction countryAgeRestriction = 1;
 }
 
-// path: #/components/messages/orderAndPaymentBanned/payload
-message OrderAndPaymentBanned {
+// path: #/components/messages/countryAgeRestrictionUpdated/payload
+message CountryAgeRestrictionUpdated {
     AnonymousSchema35 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -967,13 +988,13 @@ message OrderAndPaymentBanned {
     string sessionId = 11;
 }
 
-// path: #/components/messages/matchmakingBanned/payload/properties/payload
+// path: #/components/messages/chatAllBanned/payload/properties/payload
 message AnonymousSchema36 {
     UserFeatureBan userFeatureBan = 1;
 }
 
-// path: #/components/messages/matchmakingBanned/payload
-message MatchmakingBanned {
+// path: #/components/messages/chatAllBanned/payload
+message ChatAllBanned {
     AnonymousSchema36 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -989,13 +1010,13 @@ message MatchmakingBanned {
     string sessionId = 11;
 }
 
-// path: #/components/messages/ugcCreateUpdateBanned/payload/properties/payload
+// path: #/components/messages/chatSendBanned/payload/properties/payload
 message AnonymousSchema37 {
     UserFeatureBan userFeatureBan = 1;
 }
 
-// path: #/components/messages/ugcCreateUpdateBanned/payload
-message UgcCreateUpdateBanned {
+// path: #/components/messages/chatSendBanned/payload
+message ChatSendBanned {
     AnonymousSchema37 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -1011,13 +1032,13 @@ message UgcCreateUpdateBanned {
     string sessionId = 11;
 }
 
-// path: #/components/messages/userDisconnectRequested/payload/properties/payload
+// path: #/components/messages/leaderboardBanned/payload/properties/payload
 message AnonymousSchema38 {
-    string userId = 1;
+    UserFeatureBan userFeatureBan = 1;
 }
 
-// path: #/components/messages/userDisconnectRequested/payload
-message UserDisconnectRequested {
+// path: #/components/messages/leaderboardBanned/payload
+message LeaderboardBanned {
     AnonymousSchema38 payload = 1;
 
     // allOf(#/components/schemas/event)
@@ -1033,14 +1054,124 @@ message UserDisconnectRequested {
     string sessionId = 11;
 }
 
-// path: #/components/messages/gdprRequestDataDeletionResponse/payload/properties/payload
+// path: #/components/messages/statisticsBanned/payload/properties/payload
 message AnonymousSchema39 {
+    UserFeatureBan userFeatureBan = 1;
+}
+
+// path: #/components/messages/statisticsBanned/payload
+message StatisticsBanned {
+    AnonymousSchema39 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/orderAndPaymentBanned/payload/properties/payload
+message AnonymousSchema40 {
+    UserFeatureBan userFeatureBan = 1;
+}
+
+// path: #/components/messages/orderAndPaymentBanned/payload
+message OrderAndPaymentBanned {
+    AnonymousSchema40 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/matchmakingBanned/payload/properties/payload
+message AnonymousSchema41 {
+    UserFeatureBan userFeatureBan = 1;
+}
+
+// path: #/components/messages/matchmakingBanned/payload
+message MatchmakingBanned {
+    AnonymousSchema41 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/ugcCreateUpdateBanned/payload/properties/payload
+message AnonymousSchema42 {
+    UserFeatureBan userFeatureBan = 1;
+}
+
+// path: #/components/messages/ugcCreateUpdateBanned/payload
+message UgcCreateUpdateBanned {
+    AnonymousSchema42 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/userDisconnectRequested/payload/properties/payload
+message AnonymousSchema43 {
+    string userId = 1;
+}
+
+// path: #/components/messages/userDisconnectRequested/payload
+message UserDisconnectRequested {
+    AnonymousSchema43 payload = 1;
+
+    // allOf(#/components/schemas/event)
+    string id = 2;
+    int64 version = 3;
+    string name = 4;
+    string namespace = 5;
+    string parentNamespace = 6;
+    string timestamp = 7;
+    string clientId = 8;
+    string userId = 9;
+    string traceId = 10;
+    string sessionId = 11;
+}
+
+// path: #/components/messages/gdprRequestDataDeletionResponse/payload/properties/payload
+message AnonymousSchema44 {
     DeletionGDPR deletionGDPR = 1;
 }
 
 // path: #/components/messages/gdprRequestDataDeletionResponse/payload
 message GdprRequestDataDeletionResponse {
-    AnonymousSchema39 payload = 1;
+    AnonymousSchema44 payload = 1;
 
     // allOf(#/components/schemas/event)
     string id = 2;
@@ -1133,6 +1264,11 @@ message ThirdPartyAccountCreatedMessage {
     ThirdPartyAccountCreated payload = 1;
 }
 
+// path: #/components/messages/userAccountTypeChanged
+message UserAccountTypeChangedMessage {
+    UserAccountTypeChanged payload = 1;
+}
+
 // path: #/components/messages/userLoggedIn
 message UserLoggedInMessage {
     UserLoggedIn payload = 1;
@@ -1146,6 +1282,16 @@ message UserLoggedOutMessage {
 // path: #/components/messages/userThirdPartyLoggedIn
 message UserThirdPartyLoggedInMessage {
     UserThirdPartyLoggedIn payload = 1;
+}
+
+// path: #/components/messages/userLoginFailed
+message UserLoginFailedMessage {
+    UserLoginFailed payload = 1;
+}
+
+// path: #/components/messages/userThirdPartyLoginFailed
+message UserThirdPartyLoginFailedMessage {
+    UserThirdPartyLoginFailed payload = 1;
 }
 
 // path: #/components/messages/userInformationCreated
@@ -1168,6 +1314,11 @@ message UserInformationLanguageUpdatedMessage {
     UserInformationLanguageUpdated payload = 1;
 }
 
+// path: #/components/messages/userInformationUsernameUpdated
+message UserInformationUsernameUpdatedMessage {
+    UserInformationUsernameUpdated payload = 1;
+}
+
 // path: #/components/messages/userInformationDateOfBirthUpdated
 message UserInformationDateOfBirthUpdatedMessage {
     UserInformationDateOfBirthUpdated payload = 1;
@@ -1175,22 +1326,22 @@ message UserInformationDateOfBirthUpdatedMessage {
 
 // path: #/components/messages/userPermissionsCreated
 message UserPermissionsCreatedMessage {
-    UserPermissionsCreated payload = 1;
+    UserPermissionCreated payload = 1;
 }
 
 // path: #/components/messages/userPermissionsDeleted
 message UserPermissionsDeletedMessage {
-    UserPermissionsDeleted payload = 1;
+    UserPermissionDeleted payload = 1;
 }
 
 // path: #/components/messages/userRolesCreated
 message UserRolesCreatedMessage {
-    UserRolesCreated payload = 1;
+    UserRoleCreated payload = 1;
 }
 
 // path: #/components/messages/userRolesDeleted
 message UserRolesDeletedMessage {
-    UserRolesDeleted payload = 1;
+    UserRoleDeleted payload = 1;
 }
 
 // path: #/components/messages/countryAgeRestrictionCreated
@@ -1254,77 +1405,81 @@ message GdprRequestDataDeletionResponseMessage {
 // path: #/channels/userAccount/publish/message
 message UserAccountPublish {
     oneof payload {
-        UserAccountCreated variant0 = 1;
-        UserAccountDeleted variant1 = 2;
-        UserAccountEnabled variant2 = 3;
-        UserAccountDisabled variant3 = 4;
-        UserAccountEmailUpdated variant4 = 5;
-        UserAccountPasswordUpdated variant5 = 6;
-        UserAccountBanned variant6 = 7;
-        UserAccountUnbanned variant7 = 8;
-        UserAccountVerified variant8 = 9;
-        UserAccountLinked variant9 = 10;
-        UserAccountUnlinked variant10 = 11;
-        UserAccountUpgraded variant11 = 12;
-        GameUserAccountCreated variant12 = 13;
-        ThirdPartyAccountCreated variant13 = 14;
+        UserAccountCreatedMessage variant0 = 1;
+        UserAccountDeletedMessage variant1 = 2;
+        UserAccountEnabledMessage variant2 = 3;
+        UserAccountDisabledMessage variant3 = 4;
+        UserAccountEmailUpdatedMessage variant4 = 5;
+        UserAccountPasswordUpdatedMessage variant5 = 6;
+        UserAccountBannedMessage variant6 = 7;
+        UserAccountUnbannedMessage variant7 = 8;
+        UserAccountVerifiedMessage variant8 = 9;
+        UserAccountLinkedMessage variant9 = 10;
+        UserAccountUnlinkedMessage variant10 = 11;
+        UserAccountUpgradedMessage variant11 = 12;
+        GameUserAccountCreatedMessage variant12 = 13;
+        ThirdPartyAccountCreatedMessage variant13 = 14;
+        UserAccountTypeChangedMessage variant14 = 15;
     }
 }
 
 // path: #/channels/userAuthentication/publish/message
 message UserAuthenticationPublish {
     oneof payload {
-        UserLoggedIn variant0 = 1;
-        UserLoggedOut variant1 = 2;
-        UserThirdPartyLoggedIn variant2 = 3;
+        UserLoggedInMessage variant0 = 1;
+        UserLoggedOutMessage variant1 = 2;
+        UserThirdPartyLoggedInMessage variant2 = 3;
+        UserLoginFailedMessage variant3 = 4;
+        UserThirdPartyLoginFailedMessage variant4 = 5;
     }
 }
 
 // path: #/channels/userInformation/publish/message
 message UserInformationPublish {
     oneof payload {
-        UserInformationCreated variant0 = 1;
-        UserInformationDisplayNameUpdated variant1 = 2;
-        UserInformationCountryUpdated variant2 = 3;
-        UserInformationLanguageUpdated variant3 = 4;
-        UserInformationDateOfBirthUpdated variant4 = 5;
+        UserInformationCreatedMessage variant0 = 1;
+        UserInformationDisplayNameUpdatedMessage variant1 = 2;
+        UserInformationCountryUpdatedMessage variant2 = 3;
+        UserInformationLanguageUpdatedMessage variant3 = 4;
+        UserInformationDateOfBirthUpdatedMessage variant4 = 5;
+        UserInformationUsernameUpdatedMessage variant5 = 6;
     }
 }
 
 // path: #/channels/userPermissions/publish/message
 message UserPermissionsPublish {
     oneof payload {
-        UserPermissionsCreated variant0 = 1;
-        UserPermissionsDeleted variant1 = 2;
+        UserPermissionsCreatedMessage variant0 = 1;
+        UserPermissionsDeletedMessage variant1 = 2;
     }
 }
 
 // path: #/channels/userRoles/publish/message
 message UserRolesPublish {
     oneof payload {
-        UserRolesCreated variant0 = 1;
-        UserRolesDeleted variant1 = 2;
+        UserRolesCreatedMessage variant0 = 1;
+        UserRolesDeletedMessage variant1 = 2;
     }
 }
 
 // path: #/channels/countryAgeRestriction/publish/message
 message CountryAgeRestrictionPublish {
     oneof payload {
-        CountryAgeRestrictionCreated variant0 = 1;
-        CountryAgeRestrictionUpdated variant1 = 2;
+        CountryAgeRestrictionCreatedMessage variant0 = 1;
+        CountryAgeRestrictionUpdatedMessage variant1 = 2;
     }
 }
 
 // path: #/channels/userFeatureBan/publish/message
 message UserFeatureBanPublish {
     oneof payload {
-        ChatAllBanned variant0 = 1;
-        ChatSendBanned variant1 = 2;
-        LeaderboardBanned variant2 = 3;
-        StatisticsBanned variant3 = 4;
-        OrderAndPaymentBanned variant4 = 5;
-        MatchmakingBanned variant5 = 6;
-        UgcCreateUpdateBanned variant6 = 7;
+        ChatAllBannedMessage variant0 = 1;
+        ChatSendBannedMessage variant1 = 2;
+        LeaderboardBannedMessage variant2 = 3;
+        StatisticsBannedMessage variant3 = 4;
+        OrderAndPaymentBannedMessage variant4 = 5;
+        MatchmakingBannedMessage variant5 = 6;
+        UgcCreateUpdateBannedMessage variant6 = 7;
     }
 }
 
@@ -1402,6 +1557,11 @@ service UserAccountThirdPartyAccountCreatedService {
     rpc OnMessage(ThirdPartyAccountCreated) returns (google.protobuf.Empty);
 }
 
+// Publishes a UserAccountTypeChanged to the User Account channel. (oneOf variant) (userAccount UserAccountTypeChanged)
+service UserAccountUserAccountTypeChangedService {
+    rpc OnMessage(UserAccountTypeChanged) returns (google.protobuf.Empty);
+}
+
 // Publishes a UserLoggedIn to the User Authentication channel. (oneOf variant) (userAuthentication UserLoggedIn)
 service UserAuthenticationUserLoggedInService {
     rpc OnMessage(UserLoggedIn) returns (google.protobuf.Empty);
@@ -1415,6 +1575,16 @@ service UserAuthenticationUserLoggedOutService {
 // Publishes a UserThirdPartyLoggedIn to the User Authentication channel. (oneOf variant) (userAuthentication UserThirdPartyLoggedIn)
 service UserAuthenticationUserThirdPartyLoggedInService {
     rpc OnMessage(UserThirdPartyLoggedIn) returns (google.protobuf.Empty);
+}
+
+// Publishes a UserLoginFailed to the User Authentication channel. (oneOf variant) (userAuthentication UserLoginFailed)
+service UserAuthenticationUserLoginFailedService {
+    rpc OnMessage(UserLoginFailed) returns (google.protobuf.Empty);
+}
+
+// Publishes a UserThirdPartyLoginFailed to the User Authentication channel. (oneOf variant) (userAuthentication UserThirdPartyLoginFailed)
+service UserAuthenticationUserThirdPartyLoginFailedService {
+    rpc OnMessage(UserThirdPartyLoginFailed) returns (google.protobuf.Empty);
 }
 
 // Publishes a UserInformationCreated to the User Information channel. (oneOf variant) (userInformation UserInformationCreated)
@@ -1442,24 +1612,29 @@ service UserInformationUserInformationDateOfBirthUpdatedService {
     rpc OnMessage(UserInformationDateOfBirthUpdated) returns (google.protobuf.Empty);
 }
 
-// Publishes a UserPermissionsCreated to the User Permissions channel. (oneOf variant) (userPermissions UserPermissionsCreated)
+// Publishes a UserInformationUsernameUpdated to the User Information channel. (oneOf variant) (userInformation UserInformationUsernameUpdated)
+service UserInformationUserInformationUsernameUpdatedService {
+    rpc OnMessage(UserInformationUsernameUpdated) returns (google.protobuf.Empty);
+}
+
+// Publishes a UserPermissionCreated to the User Permissions channel. (oneOf variant) (userPermissions UserPermissionsCreated)
 service UserPermissionsUserPermissionsCreatedService {
-    rpc OnMessage(UserPermissionsCreated) returns (google.protobuf.Empty);
+    rpc OnMessage(UserPermissionCreated) returns (google.protobuf.Empty);
 }
 
-// Publishes a UserPermissionsDeleted to the User Permissions channel. (oneOf variant) (userPermissions UserPermissionsDeleted)
+// Publishes a UserPermissionDeleted to the User Permissions channel. (oneOf variant) (userPermissions UserPermissionsDeleted)
 service UserPermissionsUserPermissionsDeletedService {
-    rpc OnMessage(UserPermissionsDeleted) returns (google.protobuf.Empty);
+    rpc OnMessage(UserPermissionDeleted) returns (google.protobuf.Empty);
 }
 
-// Publishes a UserRolesCreated to the User Roles channel. (oneOf variant) (userRoles UserRolesCreated)
+// Publishes a UserRoleCreated to the User Roles channel. (oneOf variant) (userRoles UserRolesCreated)
 service UserRolesUserRolesCreatedService {
-    rpc OnMessage(UserRolesCreated) returns (google.protobuf.Empty);
+    rpc OnMessage(UserRoleCreated) returns (google.protobuf.Empty);
 }
 
-// Publishes a UserRolesDeleted to the User Roles channel. (oneOf variant) (userRoles UserRolesDeleted)
+// Publishes a UserRoleDeleted to the User Roles channel. (oneOf variant) (userRoles UserRolesDeleted)
 service UserRolesUserRolesDeletedService {
-    rpc OnMessage(UserRolesDeleted) returns (google.protobuf.Empty);
+    rpc OnMessage(UserRoleDeleted) returns (google.protobuf.Empty);
 }
 
 // Publishes a CountryAgeRestrictionCreated to the Country Age Restriction channel. (oneOf variant) (countryAgeRestriction CountryAgeRestrictionCreated)
