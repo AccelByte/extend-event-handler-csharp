@@ -1,4 +1,4 @@
-# Copyright (c) 2022-2023 AccelByte Inc. All Rights Reserved.
+# Copyright (c) 2022-2024 AccelByte Inc. All Rights Reserved.
 # This is licensed software from AccelByte Inc, for limitations
 # and restrictions contact your company contract manager.
 
@@ -12,15 +12,11 @@ APP_PATH := AccelByte.PluginArch.EventHandler.Demo.Server
 .PHONY: build image imagex test
 
 build:
-	docker run --rm -u $$(id -u):$$(id -g) -v $$(pwd):/data/ -w /data/src -e HOME="/data" -e DOTNET_CLI_HOME="/data" mcr.microsoft.com/dotnet/sdk:$(DOTNETVER) \
-			dotnet build
-
-build:
 	docker run --rm -u $$(id -u):$$(id -g) \
 		-v $$(pwd):/data/ \
 		-e HOME="/data/.testrun" -e DOTNET_CLI_HOME="/data/.testrun" \
 		mcr.microsoft.com/dotnet/sdk:$(DOTNETVER) \
-		sh -c "mkdir /data/.testrun && cp -r /data/src /data/.testrun/src && cd /data/.testrun/src && dotnet build && mkdir /data/.output && cp -r /data/.testrun/src/$(APP_PATH)/bin/* /data/.output/ && rm -rf /data/.testrun"
+		sh -c "mkdir -p /data/.testrun && cp -r /data/src /data/.testrun/src && cd /data/.testrun/src && dotnet build && mkdir -p /data/.output && cp -r /data/.testrun/src/$(APP_PATH)/bin/* /data/.output/ && rm -rf /data/.testrun"
 
 image:
 	docker build -t ${IMAGE_NAME} .
@@ -52,7 +48,7 @@ test:
 		-e AB_CLIENT_SECRET=$(AB_CLIENT_SECRET) \
 		-e AB_NAMESPACE=$(AB_NAMESPACE) \
 		mcr.microsoft.com/dotnet/sdk:$(DOTNETVER) \
-		sh -c "mkdir /data/.testrun && cp -r /data/src /data/.testrun/src && cd /data/.testrun/src && dotnet test && rm -rf /data/.testrun"
+		sh -c "mkdir -p /data/.testrun && cp -r /data/src /data/.testrun/src && cd /data/.testrun/src && dotnet test && rm -rf /data/.testrun"
 
 test_functional_local_hosted:
 	@test -n "$(ENV_PATH)" || (echo "ENV_PATH is not set"; exit 1)
