@@ -111,6 +111,8 @@ To build this sample app, use the following command.
 $ make build
 ```
 
+The build output will be available in `.output` directory.
+
 ## Running
 
 To (build and) run this sample app in a container, use the following command.
