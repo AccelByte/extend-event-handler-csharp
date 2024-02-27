@@ -8,8 +8,6 @@ test -n "$AB_CLIENT_ID" || (echo "AB_CLIENT_ID is not set"; exit 1)
 test -n "$AB_CLIENT_SECRET" || (echo "AB_CLIENT_SECRET is not set"; exit 1)
 test -n "$AB_NAMESPACE" || (echo "AB_NAMESPACE is not set"; exit 1)
 
-DEMO_PREFIX='event_handler_demo'
-
 get_code_verifier() 
 {
   echo $RANDOM | sha256sum | cut -d ' ' -f 1   # For testing only: In reality, it needs to be secure random
@@ -19,6 +17,10 @@ get_code_challenge()
 {
   echo -n "$1" | sha256sum | xxd -r -p | base64 -w 0 | sed -e 's/+/-/g' -e 's/\//\_/g' -e 's/=//g'
 }
+
+CURRENT_TIME=$(date)
+RANDOM_PREFIX="$(get_code_verifier | cut -c1-6)"
+DEMO_PREFIX='eh_demo_cs_'$RANDOM_PREFIX
 
 function api_curl()
 {
@@ -54,7 +56,7 @@ echo Creating player ${DEMO_PREFIX}_player@test.com ...
 USER_ID="$(api_curl "${AB_BASE_URL}/iam/v4/public/namespaces/$AB_NAMESPACE/users" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
     -H 'Content-Type: application/json' \
-    -d "{\"authType\":\"EMAILPASSWD\",\"country\":\"ID\",\"dateOfBirth\":\"1995-01-10\",\"displayName\":\"Event Handler Test Player\",\"emailAddress\":\"${DEMO_PREFIX}_player@test.com\",\"password\":\"GFPPlmdb2-\",\"username\":\"${DEMO_PREFIX}_player\"}" | jq --raw-output .userId)"
+    -d "{\"authType\":\"EMAILPASSWD\",\"country\":\"ID\",\"dateOfBirth\":\"1995-01-10\",\"displayName\":\"Event Handler Test Player $RANDOM_PREFIX\",\"uniqueDisplayName\":\"Cloudsave gRPC Player $RANDOM_PREFIX\",\"emailAddress\":\"${DEMO_PREFIX}_player@test.com\",\"password\":\"GFPPlmdb2-\",\"username\":\"${DEMO_PREFIX}_player\"}" | jq --raw-output .userId)"
 
 if [ "$USER_ID" == "null" ]; then
     cat http_response.out
@@ -88,7 +90,7 @@ else
     sleep 120s
 fi
 
-ENTITLEMENTS_DATA=$(api_curl "https://demo.accelbyte.io/platform/admin/namespaces/$AB_NAMESPACE/users/$USER_ID/entitlements?activeOnly=false&limit=20&offset=0" \
+ENTITLEMENTS_DATA=$(api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/users/$USER_ID/entitlements?activeOnly=false&limit=20&offset=0" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
     -H 'Content-Type: application/json')
 

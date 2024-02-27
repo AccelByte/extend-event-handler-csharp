@@ -40,19 +40,23 @@ if [ "$ACCESS_TOKEN" == "null" ]; then
     exit 1
 fi
 
-echo Checking currency USD ...
+echo Checking currency USV ...
 
-CURRENCIES_DATA=$(api_curl "https://demo.accelbyte.io/platform/admin/namespaces/$AB_NAMESPACE/currencies" \
+CURRENCIES_DATA=$(api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/currencies" \
         -H "Authorization: Bearer $ACCESS_TOKEN" \
         -H 'Content-Type: application/json')
 
-if ! echo "$CURRENCIES_DATA" | jq .[].currencyCode | grep -q '"USD"'; then
-    echo Creating currency USD ...
+if ! echo "$CURRENCIES_DATA" | jq .[].currencyCode | grep -q '"USV"'; then
+    echo Creating currency USV ...
 
-    curl "https://demo.accelbyte.io/platform/admin/namespaces/$AB_NAMESPACE/currencies" \
+    ADD_CURRENCY_DATA=$(api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/currencies" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H 'Content-Type: application/json' \
-            -d '{"currencyCode":"USD","localizationDescriptions":{"en":"US Dollars"},"currencySymbol":"US$","currencyType":"REAL","decimals":2}'
+            -d '{"currencyCode":"USV","localizationDescriptions":{"en":"Virtual US Dollars"},"currencySymbol":"USV","currencyType":"VIRTUAL","decimals":0}')
+    if [ "$ADD_CURRENCY_DATA" == "null" ]; then
+        cat http_response.out
+        exit 1
+    fi
 fi
 
 echo Creating event handler store ...
@@ -69,10 +73,10 @@ fi
 
 echo Creating event handler store category ...
 
-api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/categories?storeId=$STORE_ID" \
+CATEGORY_DATA=$(api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/categories?storeId=$STORE_ID" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
     -H 'Content-Type: application/json' \
-    --data-raw '{"categoryPath":"/eventhandlercategory","localizationDisplayNames":{"en":"eventhandlercategory"}}'
+    --data-raw '{"categoryPath":"/eventhandlercategory","localizationDisplayNames":{"en":"eventhandlercategory"}}')
 
 if ! cat http_code.out | grep -q '\(200\|201\|204\|302\)'; then
     cat http_response.out
@@ -84,7 +88,7 @@ echo Creating event handler store item ...
 ITEM_ID="$(api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/items?storeId=$STORE_ID" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
     -H 'Content-Type: application/json' \
-    -d "{\"entitlementType\":\"DURABLE\",\"maxCount\":-1,\"maxCountPerUser\":-1,\"useCount\":1,\"baseAppId\":\"\",\"itemType\":\"INGAMEITEM\",\"name\":\"eventhandleritem\",\"listable\":true,\"purchasable\":true,\"localizations\":{\"en\":{\"title\":\"eventhandleritem\"}},\"regionData\":{\"US\":[{\"price\":1,\"currencyNamespace\":\"$AB_NAMESPACE\",\"currencyCode\":\"USD\",\"purchaseAt\":\"2024-01-22T04:32:26.204Z\",\"discountPurchaseAt\":\"2024-01-22T04:32:26.204Z\"}]},\"sku\":\"EVT12345\",\"flexible\":false,\"sectionExclusive\":false,\"status\":\"ACTIVE\",\"categoryPath\":\"/eventhandlercategory\",\"features\":[],\"sellable\":false}" | jq --raw-output .itemId)"
+    -d "{\"entitlementType\":\"DURABLE\",\"maxCount\":-1,\"maxCountPerUser\":-1,\"useCount\":1,\"baseAppId\":\"\",\"itemType\":\"INGAMEITEM\",\"name\":\"eventhandleritem\",\"listable\":true,\"purchasable\":true,\"localizations\":{\"en\":{\"title\":\"eventhandleritem\"}},\"regionData\":{\"US\":[{\"price\":1,\"currencyNamespace\":\"$AB_NAMESPACE\",\"currencyCode\":\"USV\",\"purchaseAt\":\"2024-01-22T04:32:26.204Z\",\"discountPurchaseAt\":\"2024-01-22T04:32:26.204Z\"}]},\"sku\":\"EVT12345\",\"flexible\":false,\"sectionExclusive\":false,\"status\":\"ACTIVE\",\"categoryPath\":\"/eventhandlercategory\",\"features\":[],\"sellable\":false}" | jq --raw-output .itemId)"
 
 if [ "$ITEM_ID" == "null" ]; then
     cat http_response.out
@@ -95,13 +99,13 @@ export ITEM_ID_TO_GRANT=$ITEM_ID
 
 echo Publishing event handler store ...
 
-api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/stores" \
+PUBLISH_CHECK=$(api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/stores" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
-    -H 'Content-Type: application/json'     # Check before publishing store
+    -H 'Content-Type: application/json')     # Check before publishing store
 
-api_curl -X PUT "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/stores/$STORE_ID/catalogChanges/publishAll" \
+PUBLISH_DATA=$(api_curl -X PUT "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/stores/$STORE_ID/catalogChanges/publishAll" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
-    -H 'Content-Type: application/json'
+    -H 'Content-Type: application/json')
 
 if ! cat http_code.out | grep -q '\(200\|201\|204\|302\)'; then
     cat http_response.out

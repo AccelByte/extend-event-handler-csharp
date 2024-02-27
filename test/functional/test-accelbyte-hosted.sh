@@ -122,19 +122,19 @@ make imagex_push REPO_URL=$APP_REPO_URL IMAGE_TAG=v0.0.1
 
 echo '# Preparing test environment (stage 2)'
 
-echo Checking currency USD ...
+echo Checking currency USV ...
 
-CURRENCIES_DATA=$(api_curl "https://demo.accelbyte.io/platform/admin/namespaces/$AB_NAMESPACE/currencies" \
+CURRENCIES_DATA=$(api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/currencies" \
         -H "Authorization: Bearer $ACCESS_TOKEN" \
         -H 'Content-Type: application/json')
 
-if ! echo "$CURRENCIES_DATA" | jq .[].currencyCode | grep -q '"USD"'; then
-    echo Creating currency USD ...
+if ! echo "$CURRENCIES_DATA" | jq .[].currencyCode | grep -q '"USV"'; then
+    echo Creating currency USV ...
 
-    curl "https://demo.accelbyte.io/platform/admin/namespaces/$AB_NAMESPACE/currencies" \
+    curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/currencies" \
             -H "Authorization: Bearer $ACCESS_TOKEN" \
             -H 'Content-Type: application/json' \
-            -d '{"currencyCode":"USD","localizationDescriptions":{"en":"US Dollars"},"currencySymbol":"US$","currencyType":"REAL","decimals":2}'
+            -d '{"currencyCode":"USV","localizationDescriptions":{"en":"Virtual US Dollars"},"currencySymbol":"USV","currencyType":"VIRTUAL","decimals":0}'
 fi
 
 echo Creating event handler store ...
@@ -166,7 +166,7 @@ echo Creating event handler store item ...
 ITEM_ID="$(api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/items?storeId=$STORE_ID" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
     -H 'Content-Type: application/json' \
-    -d "{\"entitlementType\":\"DURABLE\",\"maxCount\":-1,\"maxCountPerUser\":-1,\"useCount\":1,\"baseAppId\":\"\",\"itemType\":\"INGAMEITEM\",\"name\":\"eventhandleritem\",\"listable\":true,\"purchasable\":true,\"localizations\":{\"en\":{\"title\":\"eventhandleritem\"}},\"regionData\":{\"US\":[{\"price\":1,\"currencyNamespace\":\"$AB_NAMESPACE\",\"currencyCode\":\"USD\",\"purchaseAt\":\"2024-01-22T04:32:26.204Z\",\"discountPurchaseAt\":\"2024-01-22T04:32:26.204Z\"}]},\"sku\":\"EVT12345\",\"flexible\":false,\"sectionExclusive\":false,\"status\":\"ACTIVE\",\"categoryPath\":\"/eventhandlercategory\",\"features\":[],\"sellable\":false}" | jq --raw-output .itemId)"
+    -d "{\"entitlementType\":\"DURABLE\",\"maxCount\":-1,\"maxCountPerUser\":-1,\"useCount\":1,\"baseAppId\":\"\",\"itemType\":\"INGAMEITEM\",\"name\":\"eventhandleritem\",\"listable\":true,\"purchasable\":true,\"localizations\":{\"en\":{\"title\":\"eventhandleritem\"}},\"regionData\":{\"US\":[{\"price\":1,\"currencyNamespace\":\"$AB_NAMESPACE\",\"currencyCode\":\"USV\",\"purchaseAt\":\"2024-01-22T04:32:26.204Z\",\"discountPurchaseAt\":\"2024-01-22T04:32:26.204Z\"}]},\"sku\":\"EVT12345\",\"flexible\":false,\"sectionExclusive\":false,\"status\":\"ACTIVE\",\"categoryPath\":\"/eventhandlercategory\",\"features\":[],\"sellable\":false}" | jq --raw-output .itemId)"
 
 if [ "$ITEM_ID" == "null" ]; then
     cat http_response.out
