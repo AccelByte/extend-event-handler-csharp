@@ -29,6 +29,31 @@ This sample app also shows the instrumentation setup necessary for
 observability. It is required so that metrics, traces, and logs are able to 
 flow properly when the app is deployed.
 
+## Project Structure
+
+```text
+...
+├── src
+│  ├── AccelByte.PluginArch.EventHandler.Demo.Server
+│  │  ├── AccelByte.PluginArch.EventHandler.Demo.Server.csproj
+│  │  ├── Classes
+│  │  │  ├── AppSettingConfigRepository.cs
+│  │  │  ├── DebugLoggerServerInterceptor.cs
+│  │  │  ├── DefaultAccelByteServiceProvider.cs
+│  │  │  ├── ExceptionHandlingInterceptor.cs
+│  │  │  └── IAccelByteServiceProvider.cs
+│  │  ├── Metric
+│  │  │  └── RequestPercentileMetricsListener.cs
+│  │  ...
+│  │  └── Services
+│  │    └── UserLoggedInService.cs                    # Where we put custom logic that will get called when the event 
+│  │                                                  # we interested got invoked
+│  ...
+...
+```
+
+The `AGS` event specification can be obtained [here](https://github.com/AccelByte/accelbyte-api-proto/tree/main/asyncapi/accelbyte). In this case,
+we are only interested on `user logged in event`. Therefore, we only put the event specification for IAM in this sample app.
 
 ## Prerequisites
 
