@@ -8,6 +8,10 @@ test -n "$AB_CLIENT_ID" || (echo "AB_CLIENT_ID is not set"; exit 1)
 test -n "$AB_CLIENT_SECRET" || (echo "AB_CLIENT_SECRET is not set"; exit 1)
 test -n "$AB_NAMESPACE" || (echo "AB_NAMESPACE is not set"; exit 1)
 
+RANDOM_SUFFIX="$(echo $RANDOM | sha1sum | head -c 6)"
+
+DEMO_PREFIX="eh_demo_cs_$RANDOM_SUFFIX"
+
 get_code_verifier() 
 {
   echo $RANDOM | sha256sum | cut -d ' ' -f 1   # For testing only: In reality, it needs to be secure random
@@ -18,15 +22,11 @@ get_code_challenge()
   echo -n "$1" | sha256sum | xxd -r -p | base64 | tr -d '\n' | sed -e 's/+/-/g' -e 's/\//\_/g' -e 's/=//g'
 }
 
-CURRENT_TIME=$(date)
-RANDOM_PREFIX="$(get_code_verifier | cut -c1-6)"
-DEMO_PREFIX='eh_demo_cs_'$RANDOM_PREFIX
-
-function api_curl()
+api_curl()
 {
-  curl -s -o http_response.out -w '%{http_code}' "$@" > http_code.out
-  echo >> http_response.out
-  cat http_response.out
+  curl -s -D api_curl_http_header.out -o api_curl_http_response.out -w '%{http_code}' "$@" > api_curl_http_code.out
+  echo >> api_curl_http_response.out
+  cat api_curl_http_response.out
 }
 
 function clean_up()
@@ -45,7 +45,7 @@ ACCESS_TOKEN="$(api_curl ${AB_BASE_URL}/iam/v3/oauth/token \
     -d "grant_type=client_credentials" | jq --raw-output .access_token)"
 
 if [ "$ACCESS_TOKEN" == "null" ]; then
-    cat http_response.out
+    cat api_curl_http_response.out
     exit 1
 fi
 
@@ -56,10 +56,10 @@ echo Creating player ${DEMO_PREFIX}_player@test.com ...
 USER_ID="$(api_curl "${AB_BASE_URL}/iam/v4/public/namespaces/$AB_NAMESPACE/users" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \
     -H 'Content-Type: application/json' \
-    -d "{\"authType\":\"EMAILPASSWD\",\"country\":\"ID\",\"dateOfBirth\":\"1995-01-10\",\"displayName\":\"Event Handler Test Player $RANDOM_PREFIX\",\"uniqueDisplayName\":\"Cloudsave gRPC Player $RANDOM_PREFIX\",\"emailAddress\":\"${DEMO_PREFIX}_player@test.com\",\"password\":\"GFPPlmdb2-\",\"username\":\"${DEMO_PREFIX}_player\"}" | jq --raw-output .userId)"
+    -d "{\"authType\":\"EMAILPASSWD\",\"country\":\"ID\",\"dateOfBirth\":\"1995-01-10\",\"displayName\":\"Event Handler Test Player $RANDOM_SUFFIX\",\"uniqueDisplayName\":\"Cloudsave gRPC Player $RANDOM_SUFFIX\",\"emailAddress\":\"${DEMO_PREFIX}_player@test.com\",\"password\":\"GFPPlmdb2-\",\"username\":\"${DEMO_PREFIX}_player\"}" | jq --raw-output .userId)"
 
 if [ "$USER_ID" == "null" ]; then
-    cat http_response.out
+    cat api_curl_http_response.out
     exit 1
 fi
 
@@ -71,10 +71,29 @@ if [ -n "$GRPC_SERVER_URL" ]; then
 else
     echo Logging in player ${DEMO_PREFIX}_player@test.com ...
 
-    CODE_VERIFIER="$(get_code_verifier)" 
-    REQUEST_ID="$(curl -s -D - "${AB_BASE_URL}/iam/v3/oauth/authorize?scope=commerce+account+social+publishing+analytics&response_type=code&code_challenge_method=S256&code_challenge=$(get_code_challenge "$CODE_VERIFIER")&client_id=$AB_CLIENT_ID" | grep -o 'request_id=[a-f0-9]\+' | cut -d= -f2)"
-    CODE="$(curl -s -D - ${AB_BASE_URL}/iam/v3/authenticate -H 'Content-Type: application/x-www-form-urlencoded' -d "password=GFPPlmdb2-&user_name=${DEMO_PREFIX}_player@test.com&request_id=$REQUEST_ID&client_id=$AB_CLIENT_ID" | grep -o 'code=[a-f0-9]\+' | cut -d= -f2)"
-    PLAYER_ACCESS_TOKEN="$(api_curl ${AB_BASE_URL}/iam/v3/oauth/token -H 'Content-Type: application/x-www-form-urlencoded' -u "$AB_CLIENT_ID:$AB_CLIENT_SECRET" -d "code=$CODE&grant_type=authorization_code&client_id=$AB_CLIENT_ID&code_verifier=$CODE_VERIFIER" | jq --raw-output .access_token)"
+    CODE_VERIFIER="$(get_code_verifier)"
+
+    api_curl "${AB_BASE_URL}/iam/v3/oauth/authorize?scope=commerce+account+social+publishing+analytics&response_type=code&code_challenge_method=S256&code_challenge=$(get_code_challenge "$CODE_VERIFIER")&client_id=$AB_CLIENT_ID"
+
+    if [ "$(cat api_curl_http_code.out)" -ge "400" ]; then
+        exit 1
+    fi
+
+    REQUEST_ID="$(cat api_curl_http_header.out | grep -o 'request_id=[a-f0-9]\+' | cut -d= -f2)"
+
+    api_curl ${AB_BASE_URL}/iam/v3/authenticate \
+            -H 'Content-Type: application/x-www-form-urlencoded' \
+            -d "password=GFPPlmdb2-&user_name=${DEMO_PREFIX}_player@test.com&request_id=$REQUEST_ID&client_id=$AB_CLIENT_ID"
+
+    if [ "$(cat api_curl_http_code.out)" -ge "400" ]; then
+        exit 1
+    fi
+
+    CODE="$(cat api_curl_http_header.out | grep -o 'code=[a-f0-9]\+' | cut -d= -f2)"
+
+    PLAYER_ACCESS_TOKEN="$(api_curl ${AB_BASE_URL}/iam/v3/oauth/token \
+            -H 'Content-Type: application/x-www-form-urlencoded' -u "$AB_CLIENT_ID:$AB_CLIENT_SECRET" \
+            -d "code=$CODE&grant_type=authorization_code&client_id=$AB_CLIENT_ID&code_verifier=$CODE_VERIFIER" | jq --raw-output .access_token)"
 
     if [ "$PLAYER_ACCESS_TOKEN" == "null" ]; then
         cat http_response.out
