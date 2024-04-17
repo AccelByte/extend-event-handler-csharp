@@ -7,27 +7,34 @@ flowchart LR
    KB[Kafka Connect]  
    subgraph Extend Event Handler App
 
-   SV["gRPC Server\n(YOU ARE HERE)"]   
+   SV["gRPC Server\n(you are here)"]   
    end   
    KB --- SV
    KF --- KB
    end   
 ```
 
-`AccelByte Gaming Services (AGS)` features can be extended by using 
-`Extend Event Handler` apps. An `Extend Event Handler` is a gRPC server which
-listen to Kafka events from `AGS` services via Kafka Connect and takes actions
+`AccelByte Gaming Services` (AGS) capabilities can be extended with 
+`Extend Event Handler` apps. An `Extend Event Handler` app is a gRPC server 
+which listens to Kafka events from AGS via Kafka Connect and takes actions
 according to a custom logic.
 
 ## Overview
 
-This repository contains a sample `Extend Event Handler` app written in `C#`. 
-It will listen to `userLoggedIn` event and then proceed to grant an entitlement 
-to the said user. 
+This repository serves as a template project for an `Extend Event Handler` 
+app written in `C#`. You can clone this repository and start creating custom 
+event handler by including the relevant AGS event specification and 
+implementing your own logic to handle AGS Kafka events.
 
-This sample app also shows the instrumentation setup necessary for 
-observability. It is required so that metrics, traces, and logs are able to 
-flow properly when the app is deployed.
+By using this repository as a template project, you will get some 
+instrumentation for observability out-of-the-box so that metrics, traces, and 
+logs will be available when the app is deployed. Since the source code is 
+included, you can customize them according to your needs.
+
+As an example to get you started, this template project contains a sample
+event handler which will listen to `userLoggedIn` event from AGS and then 
+proceed to grant an entitlement 
+to the said user. 
 
 ## Project Structure
 
@@ -52,8 +59,9 @@ flow properly when the app is deployed.
 ...
 ```
 
-The `AGS` event specification can be obtained [here](https://github.com/AccelByte/accelbyte-api-proto/tree/main/asyncapi/accelbyte). In this case,
-we are only interested on `user logged in event`. Therefore, we only put the event specification for IAM in this sample app.
+The AGS event specification can be obtained [here](https://github.com/AccelByte/accelbyte-api-proto/tree/main/asyncapi/accelbyte). 
+For the sample event handler, we are only interested in `userLoggedIn` event. 
+Therefore, we only include the AGS event specification for IAM.
 
 ## Prerequisites
 
@@ -69,7 +77,7 @@ we are only interested on `user logged in event`. Therefore, we only put the eve
       
    e. [grpcui](https://github.com/fullstorydev/grpcui)
 
-2. Access to `AccelByte Gaming Services` demo environment.
+2. Access to AGS demo environment.
 
    a. Base URL:
 
@@ -86,16 +94,23 @@ we are only interested on `user logged in event`. Therefore, we only put the eve
    - For AGS Starter customers:
       - Platform Store -> Entitlement (Create)
 
-3. A published `AGS` Store. Take a note of the `item id` which is to be granted after a user in a certain namespace successfully logged in.
+3. A published AGS Store. Take a note of the `item id` which is to be granted 
+   after a user in a certain namespace successfully logged in.
 
 ## Setup
 
-To be able to run this sample app, you will need to follow these setup steps.
+To be able to run the sample event handler, you will need to follow these setup 
+steps.
 
-1. Create a docker compose `.env` file by copying the content of [.env.template](.env.template) file.
+1. Create a docker compose `.env` file by copying the content of 
+   [.env.template](.env.template) file.
 
-   > :warning: **The host OS environment variables have higher precedence compared to `.env` file variables**: If the variables in `.env` file do not seem to take effect properly, check if there are host OS environment variables with the same name. 
-   See documentation about [docker compose environment variables precedence](https://docs.docker.com/compose/environment-variables/envvars-precedence/) for more details.
+   > :warning: **The host OS environment variables have higher precedence 
+   compared to `.env` file variables**: If the variables in `.env` file do not 
+   seem to take effect properly, check if there are host OS environment 
+   variables with the same name.  See documentation about 
+   [docker compose environment variables precedence](https://docs.docker.com/compose/environment-variables/envvars-precedence/) 
+   for more details.
 
 2. Fill in the required environment variables in `.env` file as shown below.
 
@@ -107,27 +122,27 @@ To be able to run this sample app, you will need to follow these setup steps.
    ITEM_ID_TO_GRANT='xxxxxxxxxx'             # Item id from a published store we noted previously
    ```
 
-For more options, create `src/AccelByte.PluginArch.EventHandler.Demo.Server/appsettings.Development.json` and fill in the required configuration.
+   For more options, create `src/AccelByte.PluginArch.EventHandler.Demo.Server/appsettings.Development.json` and fill in the required configuration.
 
-```json
-{
-  "DirectLogToLoki": false,
-  "RevocationListRefreshPeriod": 60,
-  "AccelByte": {
-    "BaseUrl": "https://demo.accelbyte.io",     // Base URL (env var: AB_BASE_URL)
-    "ClientId": "xxxxxxxxxx",                   // Client ID (env var: AB_CLIENT_ID)    
-    "ClientSecret": "xxxxxxxxxx",               // Client Secret (env var: AB_CLIENT_SECRET)
-    "AppName": "EVENTHANDLERDEMOGRPCSERVICE",
-    "TraceIdVersion": "1",
-    "Namespace": "xxxxxxxxxx",                  // Namespace ID (env var: AB_NAMESPACE)
-    "EnableTraceId": true,
-    "EnableUserAgentInfo": true,
-    "ResourceName": "EVENTHANDLERDEMOGRPCSERVICE",
-    "ItemIdToGrant": "xxxxxxxxxxxx"             // ItemId to grant (env var: ITEM_ID_TO_GRANT)
-  }
-}
-```
-> :warning: **Environment variable values will override related configuration values in this file**.
+   ```json
+   {
+      "DirectLogToLoki": false,
+      "RevocationListRefreshPeriod": 60,
+      "AccelByte": {
+         "BaseUrl": "https://demo.accelbyte.io",     // Base URL (env var: AB_BASE_URL)
+         "ClientId": "xxxxxxxxxx",                   // Client ID (env var: AB_CLIENT_ID)    
+         "ClientSecret": "xxxxxxxxxx",               // Client Secret (env var: AB_CLIENT_SECRET)
+         "AppName": "EVENTHANDLERDEMOGRPCSERVICE",
+         "TraceIdVersion": "1",
+         "Namespace": "xxxxxxxxxx",                  // Namespace ID (env var: AB_NAMESPACE)
+         "EnableTraceId": true,
+         "EnableUserAgentInfo": true,
+         "ResourceName": "EVENTHANDLERDEMOGRPCSERVICE",
+         "ItemIdToGrant": "xxxxxxxxxxxx"             // ItemId to grant (env var: ITEM_ID_TO_GRANT)
+      }
+   }
+   ```
+   > :warning: **Environment variable values will override related configuration values in this file**.
 
 
 ## Building
@@ -152,14 +167,24 @@ $ docker compose up --build
 
 ### Unit Test
 
-Unit test is provided to test the functionaly without actually invoking the grpc function. Unit test is provided in `src/AccelByte.PluginArch.EventHandler.Demo.Tests`. To run the test, you'll need to fill the env var file mentioned below. You also need to add following permissions to your OAuth Client
+Unit test is provided in `src/AccelByte.PluginArch.EventHandler.Demo.Tests`. 
+To run the test, you'll need to fill the env var file mentioned below.
+
+```
+AB_BASE_URL=https://demo.accelbyte.io     # Base URL of AccelByte Gaming Services demo environment
+AB_CLIENT_ID='xxxxxxxxxx'                 # OAuth Client ID
+AB_CLIENT_SECRET='xxxxxxxxxx'             # OAuth  Client Secret
+AB_NAMESPACE='xxxxxxxxxx'                 # Namespace ID
+```
+
+You also need to add following permissions to your OAuth Client
    - For AGS Premium customers:
-      - ADMIN:NAMESPACE:{namespace}:USER [READ, CREATE, DELETE]
-      - ADMIN:NAMESPACE:{namespace}:STORE [READ, CREATE, UPDATE, DELETE]
-      - ADMIN:NAMESPACE:{namespace}:CATEGORY [CREATE]
-      - ADMIN:NAMESPACE:{namespace}:CURRENCY [READ, CREATE, DELETE]
-      - ADMIN:NAMESPACE:{namespace}:ITEM [READ, CREATE, DELETE]
-      - NAMESPACE:{namespace}:USER:{userId}:STORE [READ]
+      - `ADMIN:NAMESPACE:{namespace}:USER [READ,CREATE,DELETE]`
+      - `ADMIN:NAMESPACE:{namespace}:STORE [READ,CREATE,UPDATE,DELETE]`
+      - `ADMIN:NAMESPACE:{namespace}:CATEGORY [CREATE]`
+      - `ADMIN:NAMESPACE:{namespace}:CURRENCY [READ,CREATE,DELETE]`
+      - `ADMIN:NAMESPACE:{namespace}:ITEM [READ,CREATE,DELETE]`
+      - `NAMESPACE:{namespace}:USER:{userId}:STORE [READ]`
    - For AGS Starter customers:
       - IAM -> Users (Read, Create, Delete)
       - Platform Store -> Store (Read, Create, Update, Delete)
@@ -167,23 +192,19 @@ Unit test is provided to test the functionaly without actually invoking the grpc
       - Platform Store -> Currency (Read, Create, Delete)
       - Platform Store -> Item (Read, Create, Delete)
 
-```
-AB_BASE_URL=https://demo.accelbyte.io     # Base URL of AccelByte Gaming Services demo environment
-AB_CLIENT_ID='xxxxxxxxxx'                 # Client ID from the Prerequisites section
-AB_CLIENT_SECRET='xxxxxxxxxx'             # Client Secret from the Prerequisites section
-AB_NAMESPACE='xxxxxxxxxx'                 # Namespace ID from the Prerequisites section
-```
-then run this command.
+
+Finally, execute the command below to run the test.
 
 ```shell
 $ make test
 ```
 
-> :warning: **Unit test WILL modify your current stores configuration:** Please proceed with caution. We recommend to create a new namespace for this.
+> :warning: **Unit test WILL modify your current stores configuration:** Please 
+proceed with caution. We recommend to create a dedicated namespace for this.
 
 ### Test in Local Development Environment
 
-The custom function in this sample app can be tested locally using [grpcui](https://github.com/fullstorydev/grpcui).
+The sample event handler can be tested locally using [grpcui](https://github.com/fullstorydev/grpcui).
 
 1. Run this `Extend Event Handler` sample app by using the command below.
 
@@ -197,10 +218,15 @@ The custom function in this sample app can be tested locally using [grpcui](http
    grpcui -plaintext localhost:6565
    ```
 
-   > :warning: **If you are running [grpc-plugin-dependencies](https://github.com/AccelByte/grpc-plugin-dependencies) stack alongside this sample app as mentioned in [Test Observability](#test-observability)**: Use `localhost:10000` instead of `localhost:6565`. This way, the `gRPC server` will be called via `Envoy` service within `grpc-plugin-dependencies` stack instead of directly.
+   > :warning: **If you are running 
+   [grpc-plugin-dependencies](https://github.com/AccelByte/grpc-plugin-dependencies) 
+   stack alongside this sample app as mentioned in 
+   [Test Observability](#test-observability)**: Use `localhost:10000` instead of `localhost:6565`. This way, the `gRPC server` will be called via `Envoy` 
+   service within `grpc-plugin-dependencies` stack instead of directly.
 
-3. Now in `grpcui`, send a sample of kafka event you are interested in. In this case, we are interested in `userLoggedIn` event.
-   So, we are using sample payload [here](https://docs.accelbyte.io/gaming-services/developers/api-events/iam-account/#message-userloggedin).
+3. Now in `grpcui`, send a sample of kafka event you are interested in. In this 
+   case, we are interested in `userLoggedIn` event. So, we are using sample payload 
+   [here](https://docs.accelbyte.io/gaming-services/developers/api-events/iam-account/#message-userloggedin).
 
 
    ```json
@@ -230,7 +256,8 @@ The custom function in this sample app can be tested locally using [grpcui](http
    }
    ```
 
-   > :exclamation: You can change the field value you are interested in to suits your need, e.g. `namespace` , `userId`, etc
+   > :exclamation: You can change the field value you are interested in to suits 
+   your need, e.g. `namespace` , `userId`, etc
 
    Finally, make sure to select the right service name and method name
    and click `Invoke` to send the request.
@@ -238,11 +265,12 @@ The custom function in this sample app can be tested locally using [grpcui](http
    ![grpcui request](./docs/grpcui-request.png)
 
 
-   > :exclamation: **If you are interested on other events:** you can find it [here](https://docs.accelbyte.io/gaming-services/developers/api-events/achievement/).
+   > :exclamation: **If you are interested on other events:** you can find it 
+   [here](https://docs.accelbyte.io/gaming-services/developers/api-events/achievement/).
 
  
-4. If successful, you will see in the response as follows and you can also see the 
-   item granted to the user you are using for this test.
+4. If successful, you will see in the response as follows and you can also see 
+   the item granted to the user you are using for this test.
    
    ![grpcui response](./docs/grpcui-response.png) 
 
@@ -250,7 +278,8 @@ The custom function in this sample app can be tested locally using [grpcui](http
 
 ### Test Observability
 
-To be able to see the how the observability works in this sample app locally, there are few things that need be setup before performing tests.
+To be able to see the how the observability works in this sample app locally, 
+there are few things that need be setup before performing tests.
 
 1. Uncomment loki logging driver in [docker-compose.yaml](docker-compose.yaml)
 
@@ -284,18 +313,42 @@ will be accessible at http://localhost:3000.
 
 ## Deploying
 
-After done testing, you may want to deploy this app to `AccelByte Gaming Services`.
+To deploy this app to AGS, follow the steps below.
 
 1. [Create a new Extend Event Handler app on Admin Portal](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/). Keep the `Repository URI`.
-2. Download and setup [extend-helper-cli](https://github.com/AccelByte/extend-helper-cli/) (only if it has not been done previously).
+
+2. Download and setup [extend-helper-cli](https://github.com/AccelByte/extend-helper-cli/)   (only if it has not been done previously).
+
 3. Perform docker login with `extend-helper-cli` using the following command.
    ```
    extend-helper-cli dockerlogin --namespace <my-game> --app <my-app> --login
    ```
-   > :exclamation: For your convenience, the above `extend-helper-cli` command can also be 
-   copied from `Repository Authentication Command` under the corresponding app detail page.
+   > :exclamation: For your convenience, the above `extend-helper-cli` command 
+   can also be copied from `Repository Authentication Command` under the 
+   corresponding app detail page.
+
 4. Build and push sample app docker image to AccelByte ECR using the following command.
    ```
    make imagex_push IMAGE_TAG=v0.0.1 REPO_URL=xxxxxxxxxx.dkr.ecr.us-west-2.amazonaws.com/accelbyte/justice/development/extend/xxxxxxxxxx/xxxxxxxxxx
    ```
-   > :exclamation: **The REPO_URL is obtained from step 1**: It can be found under 'Repository URI' in the app detail.
+   > :exclamation: **The REPO_URL is obtained from step 1**: It can be found 
+   under 'Repository URI' in the app detail.
+
+5. Open Admin Portal, go to **Extend** -> **Event Handler**. And then select 
+   the extend app.
+
+6. To deploy selected image tag, click **Image Version History** and select 
+   desired image tag to be deployed.
+
+7. Click **Deploy Image**, confirm the deployment and go back to App Detail by 
+   clicking **Cancel**.
+
+8. Wait until app status is running.
+
+For more information on how to deploy an `Extend Event Handler` app, see 
+[here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/getting-started-event-handler/#build-and-upload-the-extend-app).
+
+# Next Step
+
+Proceed to modify this template project and create your custom event handler. 
+See [here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/working-with-protobuf-event-descriptor/) for more details.
