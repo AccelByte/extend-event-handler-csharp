@@ -126,7 +126,6 @@ steps.
 
    ```json
    {
-      "DirectLogToLoki": false,
       "RevocationListRefreshPeriod": 60,
       "AccelByte": {
          "BaseUrl": "https://demo.accelbyte.io",     // Base URL (env var: AB_BASE_URL)

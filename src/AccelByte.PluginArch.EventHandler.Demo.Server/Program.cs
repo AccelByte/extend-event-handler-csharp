@@ -5,27 +5,17 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Net;
-using System.Net.Http;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 
-using OpenTelemetry;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using OpenTelemetry.Metrics;
-using OpenTelemetry.Extensions;
 using OpenTelemetry.Extensions.Propagators;
-
-using Serilog;
-using Serilog.Formatting.Compact;
-using Serilog.Events;
-using Serilog.Sinks.Grafana.Loki;
 
 using Prometheus;
 using AccelByte.PluginArch.EventHandler.Demo.Server.Services;
@@ -52,37 +42,6 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
             string? appResourceName = Environment.GetEnvironmentVariable("APP_RESOURCE_NAME");
             if (appResourceName == null)
                 appResourceName = "EVENTHANDLERDEMOGRPCSERVICE ";
-
-            bool directLogToLoki = builder.Configuration.GetValue<bool>("DirectLogToLoki");
-            if (directLogToLoki)
-            {
-                string? srLokiUrl = Environment.GetEnvironmentVariable("ASPNETCORE_SERILOG_LOKI");
-                if (srLokiUrl == null)
-                    srLokiUrl = builder.Configuration.GetValue<string>("LokiUrl");
-                if (srLokiUrl != null)
-                {
-                    builder.Host.UseSerilog((ctx, cfg) =>
-                    {
-                        cfg.MinimumLevel
-                            .Override("Microsoft", LogEventLevel.Information)
-                            .Enrich.FromLogContext()
-                            .WriteTo.GrafanaLoki(srLokiUrl, new List<LokiLabel>()
-                            {
-                            new LokiLabel()
-                            {
-                                Key = "application",
-                                Value = appResourceName
-                            },
-                            new LokiLabel()
-                            {
-                                Key = "env",
-                                Value = ctx.HostingEnvironment.EnvironmentName
-                            }
-                            })
-                            .WriteTo.Console(new RenderedCompactJsonFormatter());
-                    });
-                }
-            }
 
             builder.Services
                 .AddSingleton<IAccelByteServiceProvider, DefaultAccelByteServiceProvider>()
