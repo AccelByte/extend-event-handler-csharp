@@ -347,7 +347,7 @@ To deploy this app to AGS, follow the steps below.
 For more information on how to deploy an `Extend Event Handler` app, see 
 [here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/getting-started-event-handler/#build-and-upload-the-extend-app).
 
-# Next Step
+## Next Step
 
 Proceed to modify this template project and create your custom event handler. 
 See [here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/working-with-protobuf-event-descriptor/) for more details.
