@@ -5,11 +5,13 @@
 SHELL := /bin/bash
 
 IMAGE_NAME := $(shell basename "$$(pwd)")-app
+BUILDER := extend-builder
+
 DOTNETVER := 6.0
-BUILDER := grpc-plugin-server-builder
+
 APP_PATH := AccelByte.PluginArch.EventHandler.Demo.Server
 
-.PHONY: build image imagex test
+.PHONY: test
 
 build:
 	docker run --rm -u $$(id -u):$$(id -g) \
