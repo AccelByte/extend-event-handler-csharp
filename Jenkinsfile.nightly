@@ -19,7 +19,7 @@ pipeline {
   stages {
     stage('Prepare') {
       agent {
-        label 'master'
+        label "extend-builder-batch"
       }
       steps {
         script {
@@ -32,9 +32,9 @@ pipeline {
         }
       }
     }
-    stage('Test Functional') {
+    stage('Test Sample') {
       agent {
-        label 'justice-codegen-sdk'
+        label "extend-builder-batch"
       }
       options {
         lock("justice-demo-serversdktest")
@@ -45,7 +45,7 @@ pipeline {
             withCredentials([file(credentialsId: 'extend-sample-app-integration-test-env', variable: 'ENV_PATH')]) {
               sh 'cat $ENV_PATH > tmp.env'
               sh "{ set +x; } 2>/dev/null; echo '+ echo -e ****'; printf '\n${params.ENV_VAR_OVERRIDE}' >> tmp.env"
-              sh 'make test_functional_local_hosted ENV_PATH=tmp.env'
+              sh 'make test_sample_local_hosted ENV_PATH=tmp.env'
             }
           }
         }
@@ -54,7 +54,7 @@ pipeline {
         //     withCredentials([file(credentialsId: 'extend-sample-app-integration-test-env', variable: 'ENV_PATH')]) {
         //       sh 'cat $ENV_PATH > tmp.env'
         //       sh "{ set +x; } 2>/dev/null; echo '+ echo -e ****'; printf '\n${params.ENV_VAR_OVERRIDE}' >> tmp.env"
-        //       sh 'make test_functional_accelbyte_hosted ENV_PATH=tmp.env'
+        //       sh 'make test_sample_accelbyte_hosted ENV_PATH=tmp.env'
         //     }
         //   }
         // }

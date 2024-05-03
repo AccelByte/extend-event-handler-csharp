@@ -5,11 +5,15 @@
 SHELL := /bin/bash
 
 IMAGE_NAME := $(shell basename "$$(pwd)")-app
+BUILDER := extend-builder
+
 DOTNETVER := 6.0
-BUILDER := grpc-plugin-server-builder
+
 APP_PATH := AccelByte.PluginArch.EventHandler.Demo.Server
 
-.PHONY: build image imagex test
+TEST_SAMPLE_CONTAINER_NAME := sample-event-handler-test
+
+.PHONY: test
 
 build:
 	docker run --rm -u $$(id -u):$$(id -g) \
@@ -50,30 +54,41 @@ test:
 		mcr.microsoft.com/dotnet/sdk:$(DOTNETVER) \
 		sh -c "mkdir -p /data/.testrun && cp -r /data/src /data/.testrun/src && cd /data/.testrun/src && dotnet test && rm -rf /data/.testrun"
 
-test_functional_local_hosted:
+test_sample_local_hosted:
 	@test -n "$(ENV_PATH)" || (echo "ENV_PATH is not set"; exit 1)
-	docker build --tag event-handler-test-functional -f test/functional/Dockerfile test/functional && \
+	docker build \
+			--tag $(TEST_SAMPLE_CONTAINER_NAME) \
+			-f test/sample/Dockerfile \
+			test/sample
 	docker run --rm -t \
-		--env-file $(ENV_PATH) \
-		-e DOTNET_CLI_HOME="/data/.cache" \
-		-e XDG_DATA_HOME="/data/.cache" \
-		-u $$(id -u):$$(id -g) \
-		-v $$(pwd):/data \
-		-w /data event-handler-test-functional bash ./test/functional/test-local-hosted.sh
+			-u $$(id -u):$$(id -g) \
+			-e DOTNET_CLI_HOME="/data/.cache" \
+			-e XDG_DATA_HOME="/data/.cache" \
+			--env-file $(ENV_PATH) \
+			-v $$(pwd):/data \
+			-w /data \
+			--name $(TEST_SAMPLE_CONTAINER_NAME) \
+			$(TEST_SAMPLE_CONTAINER_NAME) \
+			bash ./test/sample/test-local-hosted.sh
 
-test_functional_accelbyte_hosted:
+test_sample_accelbyte_hosted:
 	@test -n "$(ENV_PATH)" || (echo "ENV_PATH is not set"; exit 1)
 ifeq ($(shell uname), Linux)
-	$(eval DARGS := -u $$(shell id -u):$$(shell id -g) --group-add $$(shell getent group docker | cut -d ':' -f 3))
+	$(eval DARGS := -u $$(shell id -u) --group-add $$(shell getent group docker | cut -d ':' -f 3))
 endif
-	docker build --tag event-handler-test-functional -f test/functional/Dockerfile test/functional && \
+	docker build \
+			--tag $(TEST_SAMPLE_CONTAINER_NAME) \
+			-f test/sample/Dockerfile \
+			test/sample
 	docker run --rm -t \
-		--env-file $(ENV_PATH) \
-		-e DOTNET_CLI_HOME="/data/.cache" \
-		-e XDG_DATA_HOME="/data/.cache" \
-		-e DOCKER_CONFIG="/tmp/.docker" \
-		$(DARGS) \
-		-v /var/run/docker.sock:/var/run/docker.sock \
-		-v $$(pwd):/data \
-		-w /data event-handler-test-functional bash ./test/functional/test-accelbyte-hosted.sh
-
+			-e DOTNET_CLI_HOME="/data/.cache" \
+			-e XDG_DATA_HOME="/data/.cache" \
+			-e DOCKER_CONFIG="/tmp/.docker" \
+			--env-file $(ENV_PATH) \
+			-v /var/run/docker.sock:/var/run/docker.sock \
+			-v $$(pwd):/data \
+			-w /data \
+			--name $(TEST_SAMPLE_CONTAINER_NAME) \
+			$(DARGS) \
+			$(TEST_SAMPLE_CONTAINER_NAME) \
+			bash ./test/sample/test-accelbyte-hosted.sh
