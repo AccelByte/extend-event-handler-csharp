@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2023-2024 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -44,22 +44,18 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server.Services
             //if user doesn't login for the same namespace as the plugin
             if (request.Namespace != targetNamespace)
                 return Task.FromResult(new Empty());
-            
-            var newEntitlement = _ABProvider.Sdk.Platform.Entitlement.GrantUserEntitlementOp
-                .SetBody(new List<EntitlementGrant>()
+
+            var fulfillmentResponse = _ABProvider.Sdk.Platform.Fulfillment.FulfillItemOp
+                .SetBody(new FulfillmentRequest()
                 {
-                    new EntitlementGrant()
-                    {
-                        ItemId = _ABProvider.ItemIdToGrant,
-                        Quantity = 1,
-                        Source = EntitlementGrantSource.REWARD,
-                        ItemNamespace = targetNamespace,
-                    }
+                    ItemId = _ABProvider.ItemIdToGrant,
+                    Quantity = 1,
+                    Source = FulfillmentRequestSource.REWARD
                 })
                 .Execute(targetNamespace, request.UserId);
-            if (newEntitlement != null)
+            if (fulfillmentResponse != null)
             {
-                foreach (var entitlementItem in newEntitlement)
+                foreach (var entitlementItem in fulfillmentResponse.EntitlementSummaries!)
                     _Logger.LogInformation($"EntitlementId: {entitlementItem.Id!}");
             }
 

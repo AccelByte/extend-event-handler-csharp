@@ -136,9 +136,9 @@ Therefore, we only include the AGS event specification for IAM.
    c. [Create an OAuth Client](https://docs.accelbyte.io/gaming-services/services/access/authorization/manage-access-control-for-applications/#create-an-iam-client) with confidential client type with the following permissions. Keep the `Client ID` and `Client Secret`.
          
    - For AGS Premium customers:
-      - `ADMIN:NAMESPACE:{namespace}:USER:*:ENTITLEMENT [CREATE]`
+      - `ADMIN:NAMESPACE:{namespace}:USER:*:FULFILLMENT [CREATE]`
    - For AGS Starter customers:
-      - Platform Store -> Entitlement (Create)
+      - Platform Store -> Fulfillment  (Create)
 
 3. A published AGS Store. Take a note of the `item id` which is to be granted 
    after a user in a certain namespace successfully logged in.
