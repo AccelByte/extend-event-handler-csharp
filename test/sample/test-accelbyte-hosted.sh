@@ -59,9 +59,19 @@ function clean_up()
 
 echo '# Downloading extend-helper-cli'
 
-curl -sf https://api.github.com/repos/AccelByte/extend-helper-cli/releases/latest \
+case "$(uname -s)" in
+    Darwin*)
+      curl -sf https://api.github.com/repos/AccelByte/extend-helper-cli/releases/latest \
+        | grep "/extend-helper-cli-darwin" | cut -d : -f 2,3 | tr -d \" \
+        | curl -sL --output extend-helper-cli $(cat)
+        ;;
+    *)
+      curl -sf https://api.github.com/repos/AccelByte/extend-helper-cli/releases/latest \
         | grep "/extend-helper-cli-linux" | cut -d : -f 2,3 | tr -d \" \
         | curl -sL --output extend-helper-cli $(cat)
+        ;;
+esac
+
 chmod +x ./extend-helper-cli
 
 echo '# Preparing test environment (stage 1)'
