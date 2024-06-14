@@ -103,11 +103,7 @@ fi
 
 echo  "# Waiting until item is granted to user ..."
 
-if [ -n "$GRPC_SERVER_URL" ]; then
-    sleep 5s
-else
-    sleep 120s
-fi
+sleep 120s
 
 ENTITLEMENTS_DATA=$(api_curl "${AB_BASE_URL}/platform/admin/namespaces/$AB_NAMESPACE/users/$USER_ID/entitlements?activeOnly=false&limit=20&offset=0" \
     -H "Authorization: Bearer $ACCESS_TOKEN" \

@@ -269,7 +269,7 @@ fi
 
 echo  "# Waiting until Extend App is fully running ..."
 
-sleep 180s
+sleep 120s
 
 echo '# Testing Extend app using demo script'
 
