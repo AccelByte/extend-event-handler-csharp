@@ -1,4 +1,4 @@
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0-alpine3.19 as builder
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:6.0-alpine3.19 AS builder
 RUN apk update && apk add --no-cache gcompat
 WORKDIR /build
 COPY src/AccelByte.PluginArch.EventHandler.Demo.Server/*.csproj .
