@@ -226,18 +226,18 @@ AB_NAMESPACE='xxxxxxxxxx'                 # Namespace ID
 
 You also need to add following permissions to your OAuth Client
    - For AGS Premium customers:
-      - `ADMIN:NAMESPACE:{namespace}:USER [READ,CREATE,DELETE]`
-      - `ADMIN:NAMESPACE:{namespace}:STORE [READ,CREATE,UPDATE,DELETE]`
+      - `ADMIN:NAMESPACE:{namespace}:USER [CREATE,READ,DELETE]`
+      - `ADMIN:NAMESPACE:{namespace}:STORE [CREATE,READ,UPDATE,DELETE]`
       - `ADMIN:NAMESPACE:{namespace}:CATEGORY [CREATE]`
-      - `ADMIN:NAMESPACE:{namespace}:CURRENCY [READ,CREATE,DELETE]`
-      - `ADMIN:NAMESPACE:{namespace}:ITEM [READ,CREATE,DELETE]`
+      - `ADMIN:NAMESPACE:{namespace}:CURRENCY [CREATE,READ,DELETE]`
+      - `ADMIN:NAMESPACE:{namespace}:ITEM [CREATE,READ,DELETE]`
       - `NAMESPACE:{namespace}:USER:{userId}:STORE [READ]`
    - For AGS Starter customers:
-      - IAM -> Users (Read, Create, Delete)
-      - Platform Store -> Store (Read, Create, Update, Delete)
+      - IAM -> Users (Create, Read, Delete)
+      - Platform Store -> Store (Create, Read, Update, Delete)
       - Platform Store -> Category (Create)
-      - Platform Store -> Currency (Read, Create, Delete)
-      - Platform Store -> Item (Read, Create, Delete)
+      - Platform Store -> Currency (Create, Read, Delete)
+      - Platform Store -> Item (Create, Read, Delete)
 
 
 Finally, execute the command below to run the test.
