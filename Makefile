@@ -20,7 +20,7 @@ build:
 		-v $$(pwd):/data/ \
 		-e HOME="/data/.cache" -e DOTNET_CLI_HOME="/data/.cache" \
 		mcr.microsoft.com/dotnet/sdk:$(DOTNETVER) \
-		sh -c "mkdir -p /data/.testrun && cp -r /data/src /data/.testrun/src && cd /data/.testrun/src && dotnet build && mkdir -p /data/.output && cp -r /data/.testrun/src/$(APP_PATH)/bin/* /data/.output/ && rm -rf /data/.testrun"
+		sh -c "mkdir -p /data/.tmp && cp -r /data/src /data/.tmp/src && cd /data/.tmp/src && dotnet build && mkdir -p /data/.output && cp -r /data/.tmp/src/$(APP_PATH)/bin/* /data/.output/ && rm -rf /data/.tmp"
 
 image:
 	docker build -t ${IMAGE_NAME} .
@@ -52,7 +52,7 @@ test:
 		-e AB_CLIENT_SECRET=$(AB_CLIENT_SECRET) \
 		-e AB_NAMESPACE=$(AB_NAMESPACE) \
 		mcr.microsoft.com/dotnet/sdk:$(DOTNETVER) \
-		sh -c "mkdir -p /data/.testrun && cp -r /data/src /data/.testrun/src && cd /data/.testrun/src && dotnet test && rm -rf /data/.testrun"
+		sh -c "mkdir -p /data/.tmp && cp -r /data/src /data/.tmp/src && cd /data/.tmp/src && dotnet test && rm -rf /data/.tmp"
 
 test_sample_local_hosted:
 	@test -n "$(ENV_PATH)" || (echo "ENV_PATH is not set"; exit 1)
