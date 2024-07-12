@@ -7,7 +7,7 @@ SHELL := /bin/bash
 IMAGE_NAME := $(shell basename "$$(pwd)")-app
 BUILDER := extend-builder
 
-DOTNETVER := 6.0
+DOTNETVER := 6.0-jammy
 
 APP_PATH := AccelByte.PluginArch.EventHandler.Demo.Server
 
