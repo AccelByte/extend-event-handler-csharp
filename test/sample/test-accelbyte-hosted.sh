@@ -115,12 +115,6 @@ fi
 
 echo '# Build and push Extend app'
 
-APP_DETAILS=$(api_curl "${AB_BASE_URL}/csm/v1/admin/namespaces/${AB_NAMESPACE}/apps/$APP_NAME" \
-  -H "Authorization: Bearer $ACCESS_TOKEN")
-
-APP_REPO_URL=$(echo "$APP_DETAILS" | jq -r '.appRepoUrl')
-APP_REPO_HOST=$(echo "$APP_REPO_URL" | cut -d/ -f1)
-
 #./extend-helper-cli dockerlogin --namespace $AB_NAMESPACE --app $APP_NAME -p | docker login -u AWS --password-stdin $APP_REPO_HOST
 ./extend-helper-cli dockerlogin --namespace $AB_NAMESPACE --app $APP_NAME --login
 
