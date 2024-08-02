@@ -129,17 +129,17 @@ Therefore, we only include the AGS event specification for IAM.
 
    a. Base URL:
 
-      - For `Starter` tier e.g.  https://spaceshooter.prod.gamingservices.accelbyte.io
-      - For `Premium` tier e.g.  https://dev.accelbyte.io
+      - Sample URL for AGS Shared Cloud customers: `https://spaceshooter.prod.gamingservices.accelbyte.io`
+      - Sample URL for AGS Private Cloud customers:  `https://dev.accelbyte.io`
 
    b. [Create a Game Namespace](https://docs.accelbyte.io/gaming-services/tutorials/how-to/create-a-game-namespace/) if you don't have one yet. Keep the `Namespace ID`.
 
 
    c. [Create an OAuth Client](https://docs.accelbyte.io/gaming-services/services/access/authorization/manage-access-control-for-applications/#create-an-iam-client) with confidential client type with the following permissions. Keep the `Client ID` and `Client Secret`.
          
-   - For AGS Premium customers:
+   - For AGS Private Cloud customers:
       - `ADMIN:NAMESPACE:{namespace}:USER:*:FULFILLMENT [CREATE]`
-   - For AGS Starter customers:
+   - For AGS Shared Cloud customers:
       - Platform Store -> Fulfillment  (Create)
 
 3. A published AGS Store. Take a note of the `item id` which is to be granted 
@@ -224,15 +224,15 @@ AB_CLIENT_SECRET='xxxxxxxxxx'             # OAuth  Client Secret
 AB_NAMESPACE='xxxxxxxxxx'                 # Namespace ID
 ```
 
-You also need to add following permissions to your OAuth Client
-   - For AGS Premium customers:
+You also need to add the following permissions to your OAuth Client
+   - For AGS Private Cloud customers:
       - `ADMIN:NAMESPACE:{namespace}:USER [CREATE,READ,DELETE]`
       - `ADMIN:NAMESPACE:{namespace}:STORE [CREATE,READ,UPDATE,DELETE]`
       - `ADMIN:NAMESPACE:{namespace}:CATEGORY [CREATE]`
       - `ADMIN:NAMESPACE:{namespace}:CURRENCY [CREATE,READ,DELETE]`
       - `ADMIN:NAMESPACE:{namespace}:ITEM [CREATE,READ,DELETE]`
       - `NAMESPACE:{namespace}:USER:{userId}:STORE [READ]`
-   - For AGS Starter customers:
+   - For AGS Shared Cloud customers:
       - IAM -> Users (Create, Read, Delete)
       - Platform Store -> Store (Create, Read, Update, Delete)
       - Platform Store -> Category (Create)
