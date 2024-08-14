@@ -14,104 +14,128 @@ flowchart LR
    end   
 ```
 
-`AccelByte Gaming Services` (AGS) capabilities can be extended with 
-`Extend Event Handler` apps. An `Extend Event Handler` app is a gRPC server 
-which listens to Kafka events from AGS via Kafka Connect and takes actions
-according to a custom logic.
+`AccelByte Gaming Services` (AGS) capabilities can be enhanced using 
+`Extend Event Handler` apps. An `Extend Event Handler` app is a gRPC server that 
+receives AGS events through `Kafka Connect` and performs actions based on 
+custom logic.
 
 ## Overview
 
-This repository serves as a template project for an `Extend Event Handler` 
-app written in `C#`. You can clone this repository and start creating custom 
-event handler by including the relevant AGS event specification and 
-implementing your own logic to handle AGS Kafka events.
+This repository provides a project template for an `Extend Event Handler` 
+app written in `C#`. It includes an example to handle AGS `userLoggedIn` event 
+and grant an item to the user. Additionally, it comes with built-in 
+instrumentation for observability, ensuring that metrics, traces, and logs are 
+available upon deployment.
 
-By using this repository as a template project, you will get some 
-instrumentation for observability out-of-the-box so that metrics, traces, and 
-logs will be available when the app is deployed. Since the source code is 
-included, you can customize them according to your needs.
-
-As an example to get you started, this template project contains a sample
-event handler which will listen to `userLoggedIn` event from AGS and then 
-proceed to grant an entitlement 
-to the said user. 
+You can clone this repository to begin developing your own `Extend Event Handler`
+app. Simply modify this project by including the AGS event spec files
+you need and implement custom logic to handle those events.
 
 ## Project Structure
+
+Here are some important folders you need to know to be able to start modifying
+this project.
 
 ```text
 ...
 ├── src
 │  ├── AccelByte.PluginArch.EventHandler.Demo.Server
-│  │  ├── AccelByte.PluginArch.EventHandler.Demo.Server.csproj
-│  │  ├── Classes
-│  │  │  ├── AppSettingConfigRepository.cs
-│  │  │  ├── DebugLoggerServerInterceptor.cs
-│  │  │  ├── DefaultAccelByteServiceProvider.cs
-│  │  │  ├── ExceptionHandlingInterceptor.cs
-│  │  │  └── IAccelByteServiceProvider.cs
-│  │  ├── Metric
-│  │  │  └── RequestPercentileMetricsListener.cs
-│  │  ...
+│  │  ├── Protos                       # AGS event spec files (*.proto)
 │  │  └── Services
-│  │    └── UserLoggedInService.cs                    # Where we put custom logic that will get called when the event 
-│  │                                                  # we interested got invoked
-│  ...
+│  │    └── UserLoggedInService.cs    # Logic to handle AGS event is implemented here
+...
 ...
 ```
 
-The AGS event specification can be obtained [here](https://github.com/AccelByte/accelbyte-api-proto/tree/main/asyncapi/accelbyte). 
-For the sample event handler, we are only interested in `userLoggedIn` event. 
-Therefore, we only include the AGS event specification for IAM.
+> :exclamation: In the example included in this project, we focus solely on the
+`userLoggedIn` event. Therefore, only the AGS event spec files 
+for IAM are included. For other events, the AGS event spec files are available
+[here](https://github.com/AccelByte/accelbyte-api-proto/tree/main/asyncapi/accelbyte). 
 
 ## Prerequisites
 
-1. Windows 11 WSL2 or Linux Ubuntu 22.04 or macOS 14+ with the following tools installed.
+1. Windows 11 WSL2 or Linux Ubuntu 22.04 or macOS 14+ with the following tools installed:
 
    a. Bash
 
-      ```
-      bash --version
+      - On Windows WSL2 or Linux Ubuntu:
 
-      GNU bash, version 5.1.16(1)-release (x86_64-pc-linux-gnu)
-      ...
-      ```
+         ```
+         bash --version
+
+         GNU bash, version 5.1.16(1)-release (x86_64-pc-linux-gnu)
+         ...
+         ```
+
+      - On macOS:
+
+         ```
+         bash --version
+
+         GNU bash, version 3.2.57(1)-release (arm64-apple-darwin23)
+         ...
+         ```
 
    b. Make
 
-      - To install from Ubuntu repository, run: `sudo apt update && sudo apt install make` 
+      - On Windows WSL2 or Linux Ubuntu:
 
-      ```
-      make --version
+         To install from the Ubuntu repository, run `sudo apt update && sudo apt install make`.
 
-      GNU Make 4.3
-      ...
-      ```
+         ```
+         make --version
 
-   c. Docker (Docker Engine v23.0+)
+         GNU Make 4.3
+         ...
+         ```
 
-      - To install from Ubuntu repository, run: `sudo apt update && sudo apt install docker.io docker-buildx docker-compose-v2`
-      - Add your user to `docker` group: `sudo usermod -aG docker $USER`
-      - Log out and log back in so that the changes take effect
+      - On macOS:
 
-      ```
-      docker version
+         ```
+         make --version
 
-      ...
-      Server: Docker Desktop
-       Engine:
-        Version:          24.0.5
-      ...
-      ```
+         GNU Make 3.81
+         ...
+         ```
+
+   c. Docker (Docker Desktop 4.30+/Docker Engine v23.0+)
+   
+      - On Linux Ubuntu:
+
+         1. To install from the Ubuntu repository, run `sudo apt update && sudo apt install docker.io docker-buildx docker-compose-v2`.
+         2. Add your user to the `docker` group: `sudo usermod -aG docker $USER`.
+         3. Log out and log back in to allow the changes to take effect.
+
+      - On Windows or macOS:
+
+         Follow Docker's documentation on installing the Docker Desktop on [Windows](https://docs.docker.com/desktop/install/windows-install/) or [macOS](https://docs.docker.com/desktop/install/mac-install/).
+
+         ```
+         docker version
+
+         ...
+         Server: Docker Desktop
+            Engine:
+            Version:          24.0.5
+         ...
+         ```
 
    d. .NET 6 SDK
 
-      - To install from Ubuntu repository, run `sudo apt-get update && sudo apt-get install -y dotnet-sdk-6.0`
+      - On Linux Ubuntu:
 
-      ```
-      dotnet --version
-      
-      6.0.128
-      ```
+         To install from the Ubuntu repository, run `sudo apt-get update && sudo apt-get install -y dotnet-sdk-6.0`.
+
+      - On Windows or macOS:
+
+         Follow Microsoft's documentation for installing .NET on [Windows](https://learn.microsoft.com/en-us/dotnet/core/install/windows) or on [macOS](https://learn.microsoft.com/en-us/dotnet/core/install/macos).
+
+
+         ```
+         dotnet --version
+         
+         6.0.128
+         ```
       
    e. [grpcui](https://github.com/fullstorydev/grpcui)
 
@@ -123,9 +147,13 @@ Therefore, we only include the AGS event specification for IAM.
       grpcui v1.4.1
       ```
 
+   f. [extend-helper-cli](https://github.com/AccelByte/extend-helper-cli)
+
+      - Use binary available [here](https://github.com/AccelByte/extend-helper-cli/releases)
+
    > :exclamation: In macOS, you may use [Homebrew](https://brew.sh/) to easily install some of the tools above.
 
-2. Access to AGS demo environment.
+2. Access to AGS environment.
 
    a. Base URL:
 
@@ -147,8 +175,7 @@ Therefore, we only include the AGS event specification for IAM.
 
 ## Setup
 
-To be able to run the sample event handler, you will need to follow these setup 
-steps.
+To be able to run this app, you will need to follow these setup steps.
 
 1. Create a docker compose `.env` file by copying the content of 
    [.env.template](.env.template) file.
@@ -194,27 +221,27 @@ steps.
 
 ## Building
 
-To build this sample app, use the following command.
+To build this app, use the following command.
 
 ```shell
-$ make build
+make build
 ```
 
 The build output will be available in `.output` directory.
 
 ## Running
 
-To (build and) run this sample app in a container, use the following command.
+To (build and) run this app in a container, use the following command.
 
 ```shell
-$ docker compose up --build
+docker compose up --build
 ```
 
 ## Testing
 
 ### Unit Test
 
-Unit test is provided in `src/AccelByte.PluginArch.EventHandler.Demo.Tests`. 
+The unit test for the example included in this project is available in `src/AccelByte.PluginArch.EventHandler.Demo.Tests`. 
 To run the test, you'll need to fill the env var file mentioned below.
 
 ```
@@ -243,7 +270,7 @@ You also need to add the following permissions to your OAuth Client
 Finally, execute the command below to run the test.
 
 ```shell
-$ make test
+make test
 ```
 
 > :warning: **Unit test WILL modify your current stores configuration:** Please 
@@ -251,9 +278,9 @@ proceed with caution. We recommend to create a dedicated namespace for this.
 
 ### Test in Local Development Environment
 
-The sample event handler can be tested locally using [grpcui](https://github.com/fullstorydev/grpcui).
+This app can be tested locally using [grpcui](https://github.com/fullstorydev/grpcui).
 
-1. Run this `Extend Event Handler` sample app by using the command below.
+1. Run this app by using the command below.
 
    ```shell
    docker compose up --build
@@ -265,11 +292,7 @@ The sample event handler can be tested locally using [grpcui](https://github.com
    grpcui -plaintext localhost:6565
    ```
 
-   > :warning: **If you are running 
-   [grpc-plugin-dependencies](https://github.com/AccelByte/grpc-plugin-dependencies) 
-   stack alongside this sample app as mentioned in 
-   [Test Observability](#test-observability)**: Use `localhost:10000` instead of `localhost:6565`. This way, the `gRPC server` will be called via `Envoy` 
-   service within `grpc-plugin-dependencies` stack instead of directly.
+   > :warning: **If you are running [grpc-plugin-dependencies](https://github.com/AccelByte/grpc-plugin-dependencies) stack alongside this project as mentioned in [Test Observability](#test-observability)**: Use `localhost:10000` instead of `localhost:6565`. This way, the `gRPC server` will be called via `Envoy` service within `grpc-plugin-dependencies` stack instead of directly.
 
 3. Now in `grpcui`, send a sample of kafka event you are interested in. In this 
    case, we are interested in `userLoggedIn` event. So, we are using sample payload 
@@ -325,8 +348,7 @@ The sample event handler can be tested locally using [grpcui](https://github.com
 
 ### Test Observability
 
-To be able to see the how the observability works in this sample app locally, 
-there are few things that need be setup before performing tests.
+To be able to see the how the observability works in this app locally, there are few things that need be setup before performing tests.
 
 1. Uncomment loki logging driver in [docker-compose.yaml](docker-compose.yaml)
 
@@ -341,11 +363,11 @@ there are few things that need be setup before performing tests.
    ```
 
    > :warning: **Make sure to install docker loki plugin beforehand**: Otherwise,
-   this sample app will not be able to run. This is required so that container logs
+   this project will not be able to run. This is required so that container logs
    can flow to the `loki` service within `grpc-plugin-dependencies` stack. 
    Use this command to install docker loki plugin: `docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions`.
 
-2. Clone and run [grpc-plugin-dependencies](https://github.com/AccelByte/grpc-plugin-dependencies) stack alongside this sample app. After this, Grafana 
+2. Clone and run [grpc-plugin-dependencies](https://github.com/AccelByte/grpc-plugin-dependencies) stack alongside this project. After this, Grafana 
 will be accessible at http://localhost:3000.
 
    ```
@@ -374,7 +396,7 @@ To deploy this app to AGS, follow the steps below.
    can also be copied from `Repository Authentication Command` under the 
    corresponding app detail page.
 
-4. Build and push sample app docker image to AccelByte ECR using the following command.
+4. Build and push this project docker image to AccelByte ECR using the following command.
    
    ```
    extend-helper-cli image-upload --work-dir <my-project-dir> --namespace <my-game> --app <my-app> --image-tag v0.0.1
@@ -394,9 +416,10 @@ To deploy this app to AGS, follow the steps below.
 8. Wait until app status is running.
 
 For more information on how to deploy an `Extend Event Handler` app, see 
-[here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/getting-started-event-handler/#build-and-upload-the-extend-app).
+[here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/getting-started-event-handler/#deploy-in-ags).
 
 ## Next Step
 
-Proceed to modify this template project and create your custom event handler. 
-See [here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/working-with-protobuf-event-descriptor/) for more details.
+Proceed create your own `Extend Event Handler` app by modifying this project. 
+See [here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/how-to-listen-and-handle-different-ags-events/) for more details.
+
