@@ -384,7 +384,7 @@ will be accessible at http://localhost:3000.
 
 To deploy this app to AGS, follow the steps below.
 
-1. [Create a new Extend Event Handler app on Admin Portal](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/). Keep the `Repository URI`.
+1. [Create a new Extend Event Handler app on Admin Portal](https://docs.accelbyte.io/gaming-services/services/extend/event-handler/). Keep the `Repository URI`.
 
 2. Download and setup [extend-helper-cli](https://github.com/AccelByte/extend-helper-cli/)   (only if it has not been done previously).
 
@@ -416,10 +416,10 @@ To deploy this app to AGS, follow the steps below.
 8. Wait until app status is running.
 
 For more information on how to deploy an `Extend Event Handler` app, see 
-[here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/getting-started-event-handler/#deploy-in-ags).
+[here](https://docs.accelbyte.io/gaming-services/services/extend/event-handler/getting-started-event-handler/#deploy-in-ags).
 
 ## Next Step
 
 Proceed create your own `Extend Event Handler` app by modifying this project. 
-See [here](https://docs.accelbyte.io/gaming-services/services/extend/events-handler/how-to-listen-and-handle-different-ags-events/) for more details.
+See [here](https://docs.accelbyte.io/gaming-services/services/extend/event-handler/how-to-listen-and-handle-different-ags-events/) for more details.
 
