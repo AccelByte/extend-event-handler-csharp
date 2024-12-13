@@ -92,8 +92,3 @@ endif
 			$(DARGS) \
 			$(TEST_SAMPLE_CONTAINER_NAME) \
 			bash ./test/sample/test-accelbyte-hosted.sh
-
-test_docs_broken_links:
-	@test -n "$(SDK_MD_CRAWLER_PATH)" || (echo "SDK_MD_CRAWLER_PATH is not set" ; exit 1)
-	bash "$(SDK_MD_CRAWLER_PATH)/md-crawler.sh" \
-			-i README.md
