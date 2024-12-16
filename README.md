@@ -269,7 +269,7 @@ You also need to add the following permissions to your OAuth Client
 Finally, execute the command below to run the test.
 
 ```shell
-make test
+make test_with_env
 ```
 
 > :warning: **Unit test WILL modify your current stores configuration:** Please 
