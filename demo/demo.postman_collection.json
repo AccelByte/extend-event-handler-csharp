@@ -1,0 +1,320 @@
+{
+	"info": {
+		"_postman_id": "d740ddd5-2e77-409a-b987-2b275955c812",
+		"name": "event-handler-demo",
+		"description": "This `collection` requires an `environment` with the following variables.\n\n- `AB_BASE_URL`\n    \n- `AB_NAMESPACE`\n    \n- `AB_CLIENT_ID`\n    \n- `AB_CLIENT_SECRET`\n    \n- `ITEM_ID_TO_GRANT`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "16846723"
+	},
+	"item": [
+		{
+			"name": "10-client-login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Store client access token in collection variable\", function () {\r",
+							"    var responseJson = pm.response.json();\r",
+							"    \r",
+							"    if (responseJson.access_token !== undefined) {\r",
+							"        pm.collectionVariables.set('CLIENT_ACCESS_TOKEN', responseJson.access_token)\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "{{AB_CLIENT_SECRET}}",
+						"username": "{{AB_CLIENT_ID}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": "{{AB_BASE_URL}}/iam/v3/oauth/token"
+			},
+			"response": []
+		},
+		{
+			"name": "20 client-create-test-user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Store test user id, email, and password in collection variable\", function () {\r",
+							"    var responseJson = pm.response.json();\r",
+							"    \r",
+							"    if (responseJson.data[0].userId !== undefined) {\r",
+							"        pm.collectionVariables.set('TEST_USER_ID', responseJson.data[0].userId)\r",
+							"    }\r",
+							"    if (responseJson.data[0].emailAddress !== undefined) {\r",
+							"        pm.collectionVariables.set('TEST_USER_EMAIL', responseJson.data[0].emailAddress)\r",
+							"    }\r",
+							"    if (responseJson.data[0].password !== undefined) {\r",
+							"        pm.collectionVariables.set('TEST_USER_PASSWORD', responseJson.data[0].password)\r",
+							"    }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{CLIENT_ACCESS_TOKEN}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"count\": 1,\r\n  \"userInfo\": {\r\n    \"country\": \"US\"\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{AB_BASE_URL}}/iam/v4/admin/namespaces/{{AB_NAMESPACE}}/test_users"
+			},
+			"response": []
+		},
+		{
+			"name": "30-test-user-login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Store test user access token in collection variable\", function () {\r",
+							"    var responseJson = pm.response.json();\r",
+							"    \r",
+							"    if (responseJson.access_token !== undefined) {\r",
+							"        pm.collectionVariables.set('TEST_USER_ACCESS_TOKEN', responseJson.access_token)\r",
+							"    }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"followRedirects": false
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": {
+						"password": "{{AB_CLIENT_SECRET}}",
+						"username": "{{AB_CLIENT_ID}}"
+					}
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{TEST_USER_EMAIL}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{TEST_USER_PASSWORD}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": "{{AB_BASE_URL}}/iam/v3/oauth/token"
+			},
+			"response": []
+		},
+		{
+			"name": "40-client-check-test-user-entitlement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Check if item is granted to test user once and only once\", function () {\r",
+							"    const responseText = pm.response.text()\r",
+							"    const itemIdToGrant = pm.environment.get('ITEM_ID_TO_GRANT')\r",
+							"\r",
+							"    const count = responseText.split(itemIdToGrant).length - 1\r",
+							"\r",
+							"    pm.expect(count == 1).to.be.true\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Wait until item is granted to test user before checking\r",
+							"\r",
+							"//setTimeout(function(){}, 5000);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{CLIENT_ACCESS_TOKEN}}"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{AB_BASE_URL}}/platform/admin/namespaces/{{AB_NAMESPACE}}/users/{{TEST_USER_ID}}/entitlements?activeOnly=false&limit=20&offset=0",
+					"host": [
+						"{{AB_BASE_URL}}"
+					],
+					"path": [
+						"platform",
+						"admin",
+						"namespaces",
+						"{{AB_NAMESPACE}}",
+						"users",
+						"{{TEST_USER_ID}}",
+						"entitlements"
+					],
+					"query": [
+						{
+							"key": "activeOnly",
+							"value": "false"
+						},
+						{
+							"key": "limit",
+							"value": "20"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "90-client-delete-test-user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "{{CLIENT_ACCESS_TOKEN}}"
+					}
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": "{{AB_BASE_URL}}/iam/v3/admin/namespaces/{{AB_NAMESPACE}}/users/{{TEST_USER_ID}}/information"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "TEST_USER_ID",
+			"value": ""
+		},
+		{
+			"key": "TEST_USER_EMAIL_ADDRESS",
+			"value": ""
+		},
+		{
+			"key": "TEST_USER_PASSWORD",
+			"value": ""
+		},
+		{
+			"key": "TEST_USER_ACCESS_TOKEN",
+			"value": ""
+		},
+		{
+			"key": "CLIENT_ACCESS_TOKEN",
+			"value": ""
+		},
+		{
+			"key": "TEST_USER_EMAIL",
+			"value": ""
+		}
+	]
+}
