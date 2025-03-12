@@ -136,15 +136,9 @@ for IAM are included. For other events, the AGS event spec files are available
          6.0.128
          ```
       
-   e. [grpcui](https://github.com/fullstorydev/grpcui)
+   e. [Postman](https://www.postman.com/)
 
-      - Use binary available [here](https://github.com/fullstorydev/grpcui/releases)
-
-      ```
-      grpcui --version
-
-      grpcui v1.4.1
-      ```
+      - Use binary available [here](https://www.postman.com/downloads/)
 
    f. [extend-helper-cli](https://github.com/AccelByte/extend-helper-cli)
 
@@ -277,7 +271,7 @@ proceed with caution. We recommend to create a dedicated namespace for this.
 
 ### Test in Local Development Environment
 
-This app can be tested locally using [grpcui](https://github.com/fullstorydev/grpcui).
+This app can be tested locally using [Postman](https://www.postman.com/).
 
 1. Run this app by using the command below.
 
@@ -285,18 +279,17 @@ This app can be tested locally using [grpcui](https://github.com/fullstorydev/gr
    docker compose up --build
    ```
 
-2. Run `grpcui` with the following command.
+2. Open `Postman`, create a new `gRPC request`, and enter `localhost:6565` as the URL.
 
-   ```shell
-   grpcui -plaintext localhost:6565
-   ```
+   ![Postman new grpc request](./docs/postman-new-grpc-request.png)
 
    > :warning: **If you are running [grpc-plugin-dependencies](https://github.com/AccelByte/grpc-plugin-dependencies) stack alongside this project as mentioned in [Test Observability](#test-observability)**: Use `localhost:10000` instead of `localhost:6565`. This way, the `gRPC server` will be called via `Envoy` service within `grpc-plugin-dependencies` stack instead of directly.
 
-3. Now in `grpcui`, send a sample of kafka event you are interested in. In this 
-   case, we are interested in `userLoggedIn` event. So, we are using sample payload 
-   [here](https://docs.accelbyte.io/gaming-services/knowledge-base/api-events/iam-account/#message-userloggedin).
+3. Since we are interested in `userLoggedIn` event, select `UserAuthenticationUserLoggedInService/OnMessage` method. 
 
+   ![Postman new grpc request](./docs/postman-select-grpc-method.png)
+
+4. Send a `userLoggedIn` event to the gRPC server by copying and pasting the sample Kafka event JSON below, then click `Invoke`. For the sample provided in this Extend app template, ensure that you provide valid values for at least `namespace` and `userId`.
 
    ```json
    {
@@ -325,25 +318,14 @@ This app can be tested locally using [grpcui](https://github.com/fullstorydev/gr
    }
    ```
 
-   > :exclamation: You can change the field value you are interested in to suits 
-   your need, e.g. `namespace` , `userId`, etc
-
-   Finally, make sure to select the right service name and method name
-   and click `Invoke` to send the request.
-
-   ![grpcui request](./docs/grpcui-request.png)
-
-
-   > :exclamation: **If you are interested on other events:** you can find it 
+   > :exclamation: **For other AGS events:** You can find the information and the corresponding sample Kafka event JSON
    [here](https://docs.accelbyte.io/gaming-services/knowledge-base/api-events/achievement/).
-
  
-4. If successful, you will see in the response as follows and you can also see 
-   the item granted to the user you are using for this test.
-   
-   ![grpcui response](./docs/grpcui-response.png) 
+5. If successful, the response will appear as shown below, and you will also be able to see the item granted to the user you are using for this test.
 
-   ![granted entitlement](./docs/granted-entitlement.png)
+   ![Postman new grpc request](./docs/postman-grpc-response.png)
+
+   ![Granted entitlement](./docs/granted-entitlement.png)
 
 ### Test Observability
 
