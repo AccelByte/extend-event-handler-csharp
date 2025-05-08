@@ -38,18 +38,3 @@ imagex_push:
 	docker buildx inspect $(BUILDER) || docker buildx create --name $(BUILDER) --use
 	docker buildx build -t ${REPO_URL}:${IMAGE_TAG} --platform linux/amd64 --push .
 	docker buildx rm --keep-state $(BUILDER)
-
-test_with_env:
-	@test -n "$(AB_CLIENT_ID)" || (echo "AB_CLIENT_ID is not set"; exit 1)
-	@test -n "$(AB_CLIENT_SECRET)" || (echo "AB_CLIENT_SECRET is not set"; exit 1)
-	@test -n "$(AB_BASE_URL)" || (echo "AB_BASE_URL is not set"; exit 1)
-	@test -n "$(AB_NAMESPACE)" || (echo "AB_NAMESPACE is not set"; exit 1)
-	docker run --rm -u $$(id -u):$$(id -g) \
-		-v $$(pwd):/data/ \
-		-e HOME="/data/.cache" -e DOTNET_CLI_HOME="/data/.cache" \
-		-e AB_CLIENT_ID=$(AB_CLIENT_ID) \
-		-e AB_BASE_URL=$(AB_BASE_URL) \
-		-e AB_CLIENT_SECRET=$(AB_CLIENT_SECRET) \
-		-e AB_NAMESPACE=$(AB_NAMESPACE) \
-		mcr.microsoft.com/dotnet/sdk:$(DOTNETVER) \
-		sh -c "mkdir -p /data/.tmp && cp -r /data/src /data/.tmp/src && cd /data/.tmp/src && dotnet test && rm -rf /data/.tmp"
