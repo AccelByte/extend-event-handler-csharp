@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2023 AccelByte Inc. All Rights Reserved.
+﻿// Copyright (c) 2023-2025 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -28,7 +28,9 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
 
         public bool EnableUserAgentInfo { get; set; } = false;
 
-        public string ResourceName { get; set; } = String.Empty;
+        public string ResourceName { get; set; } = "";
+
+        public string ServiceName { get; set; } = "";
 
         public IHttpLogger? Logger { get; set; } = null;
 
@@ -52,9 +54,15 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
             if ((abNamespace != null) && (abNamespace.Trim() != String.Empty))
                 Namespace = abNamespace.Trim();
 
+            string? appServiceName = Environment.GetEnvironmentVariable("OTEL_SERVICE_NAME");
+            if (appServiceName == null)
+                ServiceName = "extend-app-event-handler";
+            else
+                ServiceName = $"extend-app-{appServiceName.Trim().ToLower()}";
+
             string? appResourceName = Environment.GetEnvironmentVariable("APP_RESOURCE_NAME");
             if (appResourceName == null)
-                appResourceName = "EVENTHANDLERDEMOGRPCSERVICE ";
+                appResourceName = "EVENTHANDLEREXTENDAPP";
             ResourceName = appResourceName;
 
             string? itemIdToGrant = Environment.GetEnvironmentVariable("ITEM_ID_TO_GRANT");

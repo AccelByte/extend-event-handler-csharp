@@ -1,4 +1,4 @@
-// Copyright (c) 2023 AccelByte Inc. All Rights Reserved.
+// Copyright (c) 2023-2025 AccelByte Inc. All Rights Reserved.
 // This is licensed software from AccelByte Inc, for limitations
 // and restrictions contact your company contract manager.
 
@@ -27,9 +27,16 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
         public static int Main(string[] args)
         {
             OpenTelemetry.Sdk.SetDefaultTextMapPropagator(new B3Propagator());
+
+            string? appServiceName = Environment.GetEnvironmentVariable("OTEL_SERVICE_NAME");
+            if (appServiceName == null)
+                appServiceName = "extend-app-event-handler";
+            else
+                appServiceName = $"extend-app-{appServiceName.Trim().ToLower()}";
+
             Metrics.DefaultRegistry.SetStaticLabels(new Dictionary<string, string>()
             {
-                { "application", "eventhandler_demo_grpcserver" }
+                { "application", appServiceName }
             });
 
             var builder = WebApplication.CreateBuilder(args);
@@ -41,7 +48,7 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
 
             string? appResourceName = Environment.GetEnvironmentVariable("APP_RESOURCE_NAME");
             if (appResourceName == null)
-                appResourceName = "EVENTHANDLERDEMOGRPCSERVICE ";
+                appResourceName = "EVENTHANDLEREXTENDAPP";
 
             builder.Services
                 .AddSingleton<IAccelByteServiceProvider, DefaultAccelByteServiceProvider>()
@@ -56,7 +63,7 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
                     traceConfig
                         .AddSource(appResourceName)
                         .SetResourceBuilder(ResourceBuilder.CreateDefault()
-                            .AddService(appResourceName, null, version)
+                            .AddService(appServiceName, null, version)
                             .AddTelemetrySdk())
                         .AddZipkinExporter()
                         .AddHttpClientInstrumentation()
