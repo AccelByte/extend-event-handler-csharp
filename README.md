@@ -294,14 +294,14 @@ This app can be tested locally using [Postman](https://www.postman.com/).
    ```json
    {
      "payload": {
-        "userAccount": {
-           "userId": "string",
-           "emailAddress": "string",
+        "user_account": {
+           "user_id": "string",
+           "email_address": "string",
            "country": "string",
            "namespace": "string"
         },
-        "userAuthentication": {
-           "platformId": "string",
+        "user_authentication": {
+           "platform_id": "string",
            "refresh": true
         }
      },
@@ -309,12 +309,12 @@ This app can be tested locally using [Postman](https://www.postman.com/).
      "version": 0,
      "name": "string",
      "namespace": "string",
-     "parentNamespace": "string",
+     "parent_namespace": "string",
      "timestamp": "2019-08-24T14:15:22Z",
-     "clientId": "string",
-     "userId": "string",
-     "traceId": "string",
-     "sessionId": "string"
+     "client_id": "string",
+     "user_id": "string",
+     "trace_id": "string",
+     "session_id": "string"
    }
    ```
 
