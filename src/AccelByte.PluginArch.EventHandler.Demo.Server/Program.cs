@@ -87,6 +87,7 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
             app.UseGrpcMetrics();
 
             app.MapGrpcService<UserLoggedInService>();
+            app.MapGrpcService<UserThirdPartyLoggedInService>();
             app.MapGrpcReflectionService();
             app.MapGrpcHealthChecksService();
             app.MapMetrics();
