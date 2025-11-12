@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -84,14 +85,30 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
             builder.Services.AddGrpcReflection();
 
             var app = builder.Build();
-            app.UseGrpcMetrics();
+            var logger = app.Services.GetRequiredService<ILogger<Program>>();
 
+            var abProvider = app.Services.GetService<IAccelByteServiceProvider>();
+            if (abProvider == null)
+            {
+                logger.LogError("IAccelByteServiceProvider is not registered in the service container.");
+                Environment.Exit(1);
+            }
+
+            var itemIdToGrant = abProvider.Config?.ItemIdToGrant;
+            if (string.IsNullOrEmpty(itemIdToGrant))
+            {
+                logger.LogError("ITEM_ID_TO_GRANT environment variable is required.");
+                Environment.Exit(1);
+            }
+
+            app.UseGrpcMetrics();
             app.MapGrpcService<UserLoggedInService>();
             app.MapGrpcService<UserThirdPartyLoggedInService>();
             app.MapGrpcReflectionService();
             app.MapGrpcHealthChecksService();
             app.MapMetrics();
             app.Run();
+
             return 0;
         }
     }
