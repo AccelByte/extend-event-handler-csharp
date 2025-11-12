@@ -190,28 +190,6 @@ To be able to run this app, you will need to follow these setup steps.
    ITEM_ID_TO_GRANT='xxxxxxxxxx'             # Item id from a published store we noted previously
    ```
 
-   For more options, create `src/AccelByte.PluginArch.EventHandler.Demo.Server/appsettings.Development.json` and fill in the required configuration.
-
-   ```json
-   {
-      "RevocationListRefreshPeriod": 60,
-      "AccelByte": {
-         "BaseUrl": "https://demo.accelbyte.io",     // Base URL (env var: AB_BASE_URL)
-         "ClientId": "xxxxxxxxxx",                   // Client ID (env var: AB_CLIENT_ID)    
-         "ClientSecret": "xxxxxxxxxx",               // Client Secret (env var: AB_CLIENT_SECRET)
-         "AppName": "EVENTHANDLERDEMOGRPCSERVICE",
-         "TraceIdVersion": "1",
-         "Namespace": "xxxxxxxxxx",                  // Namespace ID (env var: AB_NAMESPACE)
-         "EnableTraceId": true,
-         "EnableUserAgentInfo": true,
-         "ResourceName": "EVENTHANDLERDEMOGRPCSERVICE",
-         "ItemIdToGrant": "xxxxxxxxxxxx"             // ItemId to grant (env var: ITEM_ID_TO_GRANT)
-      }
-   }
-   ```
-   > :warning: **Environment variable values will override related configuration values in this file**.
-
-
 ## Building
 
 To build this app, use the following command.
@@ -231,43 +209,6 @@ docker compose up --build
 ```
 
 ## Testing
-
-### Unit Test
-
-The unit test for the example included in this project is available in `src/AccelByte.PluginArch.EventHandler.Demo.Tests`. 
-To run the test, you'll need to fill the env var file mentioned below.
-
-```
-AB_BASE_URL=https://demo.accelbyte.io     # Base URL of AccelByte Gaming Services demo environment
-AB_CLIENT_ID='xxxxxxxxxx'                 # OAuth Client ID
-AB_CLIENT_SECRET='xxxxxxxxxx'             # OAuth  Client Secret
-AB_NAMESPACE='xxxxxxxxxx'                 # Namespace ID
-```
-
-You also need to add the following permissions to your OAuth Client
-   - For AGS Private Cloud customers:
-      - `ADMIN:NAMESPACE:{namespace}:USER [CREATE,READ,DELETE]`
-      - `ADMIN:NAMESPACE:{namespace}:STORE [CREATE,READ,UPDATE,DELETE]`
-      - `ADMIN:NAMESPACE:{namespace}:CATEGORY [CREATE]`
-      - `ADMIN:NAMESPACE:{namespace}:CURRENCY [CREATE,READ,DELETE]`
-      - `ADMIN:NAMESPACE:{namespace}:ITEM [CREATE,READ,DELETE]`
-      - `NAMESPACE:{namespace}:USER:{userId}:STORE [READ]`
-   - For AGS Shared Cloud customers:
-      - IAM -> Users (Create, Read, Delete)
-      - Platform Store -> Store (Create, Read, Update, Delete)
-      - Platform Store -> Category (Create)
-      - Platform Store -> Currency (Create, Read, Delete)
-      - Platform Store -> Item (Create, Read, Delete)
-
-
-Finally, execute the command below to run the test.
-
-```shell
-make test_with_env
-```
-
-> :warning: **Unit test WILL modify your current stores configuration:** Please 
-proceed with caution. We recommend to create a dedicated namespace for this.
 
 ### Test in Local Development Environment
 
