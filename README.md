@@ -20,10 +20,10 @@ custom logic.
 
 ## Overview
 
-This repository provides a project template for an `Extend Event Handler` 
-app written in `C#`. It includes an example to handle AGS `userLoggedIn` event 
-and grant an item to the user. Additionally, it comes with built-in 
-instrumentation for observability, ensuring that metrics, traces, and logs are 
+This repository provides a project template for an `Extend Event Handler`
+app written in `C#`. It includes examples to handle AGS `userLoggedIn` and `userThirdPartyLoggedIn` events
+and grant an in-game item to the user. Additionally, it comes with built-in
+instrumentation for observability, ensuring that metrics, traces, and logs are
 available upon deployment.
 
 You can clone this repository to begin developing your own `Extend Event Handler`
@@ -39,16 +39,17 @@ this project.
 ...
 ├── src
 │  ├── AccelByte.PluginArch.EventHandler.Demo.Server
-│  │  ├── Protos                       # AGS event spec files (*.proto)
+│  │  ├── Protos                                # AGS event spec files (*.proto)
 │  │  └── Services
-│  │    └── UserLoggedInService.cs    # Logic to handle AGS event is implemented here
+│  │    ├── UserLoggedInService.cs              # userLoggedIn event handler
+│  │    └── UserThirdPartyLoggedInService.cs    # userThirdPartyLoggedIn event handler
 ...
 ...
 ```
 
 > :exclamation: In the example included in this project, we focus solely on the
-`userLoggedIn` event. Therefore, only the AGS event spec files 
-for IAM are included. For other events, the AGS event spec files are available
+`userLoggedIn` and `userThirdPartyLoggedIn` events. Therefore, only the AGS event spec files 
+for these two events are included. For other events, the AGS event spec files are available
 [here](https://github.com/AccelByte/accelbyte-api-proto/tree/main/asyncapi/accelbyte). 
 
 ## Prerequisites
@@ -163,7 +164,7 @@ for IAM are included. For other events, the AGS event spec files are available
    - For AGS Shared Cloud customers:
       - Platform Store -> Fulfillment  (Create)
 
-3. A published AGS Store. Take a note of the `item id` which is to be granted 
+3. A published AGS Store. Take a note of the in-game `item id` which is to be granted 
    after a user in a certain namespace successfully logged in.
 
 ## Setup
@@ -187,7 +188,7 @@ To be able to run this app, you will need to follow these setup steps.
    AB_CLIENT_ID='xxxxxxxxxx'                 # Client ID from the Prerequisites section
    AB_CLIENT_SECRET='xxxxxxxxxx'             # Client Secret from the Prerequisites section
    AB_NAMESPACE='xxxxxxxxxx'                 # Namespace ID from the Prerequisites section
-   ITEM_ID_TO_GRANT='xxxxxxxxxx'             # Item id from a published store we noted previously
+   ITEM_ID_TO_GRANT='xxxxxxxxxx'             # In-game item id from a published store we noted previously
    ```
 
 ## Building
@@ -230,7 +231,8 @@ This app can be tested locally using [Postman](https://www.postman.com/).
 
    ![Postman new grpc request](./docs/postman-select-grpc-method.png)
 
-4. Send a `userLoggedIn` event to the gRPC server by copying and pasting the sample Kafka event JSON below, then click `Invoke`. For the sample provided in this Extend app template, ensure that you provide valid values for at least `namespace` and `userId`.
+4. Send a `userLoggedIn` event to the gRPC server by copying and pasting the sample Kafka event JSON below, replace at least `namespace` and `userId` with valid values, and then 
+click `Invoke`.
 
    ```json
    {
@@ -258,15 +260,55 @@ This app can be tested locally using [Postman](https://www.postman.com/).
      "session_id": "string"
    }
    ```
-
-   > :exclamation: **For other AGS events:** You can find the information and the corresponding sample Kafka event JSON
-   [here](https://docs.accelbyte.io/gaming-services/knowledge-base/api-events/achievement/).
  
-5. If successful, the response will appear as shown below, and you will also be able to see the item granted to the user you are using for this test.
+5. If successful, the response will appear as shown below, and you will also be able to see the in-game item granted to the user you are using for this test.
 
    ![Postman new grpc request](./docs/postman-grpc-response.png)
 
    ![Granted entitlement](./docs/granted-entitlement.png)
+
+6. To do the same with `userThirdPartyLoggedIn` event, select `UserAuthenticationUserThirdPartyLoggedInService/OnMessage` and use the sample Kafka event JSON below. Valid values for at least `namespace` and `userId` are also required.
+
+   ```json
+   {
+      "payload": {
+         "userAccount": {
+            "userId": "string",
+            "emailAddress": "string",
+            "userName": "string",
+            "country": "string",
+            "namespace": "string",
+            "platformId": "string",
+            "displayName": "string"
+         },
+         "userAuthentication": {
+            "platformId": "string",
+            "refresh": true,
+            "platformUserId": "string",
+            "simultaneousPlatformId": "string",
+            "simultaneousPlatformUserId": "string"
+         },
+         "loginLocation": {
+            "country": "string",
+            "state": "string",
+            "city": "string"
+         }
+      },
+      "id": "string",
+      "version": 0,
+      "name": "string",
+      "namespace": "string",
+      "parentNamespace": "string",
+      "timestamp": "2019-08-24T14:15:22Z",
+      "clientId": "string",
+      "userId": "string",
+      "traceId": "string",
+      "sessionId": "string"
+   }
+   ```
+
+> :exclamation: **For other AGS events:** You can find the information and the corresponding sample Kafka event JSON
+[here](https://docs.accelbyte.io/gaming-services/knowledge-base/api-events/achievement/).
 
 ### Test Observability
 
