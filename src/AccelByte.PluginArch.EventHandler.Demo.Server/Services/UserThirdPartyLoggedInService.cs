@@ -29,7 +29,7 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server.Services
         {
             _Logger.LogInformation("Received UserThirdPartyLoggedIn event: {@Request}", request);
 
-            Entitlement.grantEntitlement(
+            Entitlement.GrantEntitlement(
                         _ABProvider.Sdk,
                         _ABProvider.Sdk.Namespace,
                         request.UserId,

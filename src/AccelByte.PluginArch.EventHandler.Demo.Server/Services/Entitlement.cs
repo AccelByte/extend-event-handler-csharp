@@ -10,7 +10,7 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server.Services
 {
     public static class Entitlement
     {
-        public static void grantEntitlement(
+        public static void GrantEntitlement(
             AccelByteSDK sdk,
             string @namespace,
             string userId,
