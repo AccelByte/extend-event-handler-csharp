@@ -16,14 +16,15 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server.Services
             string userId,
             string itemId)
         {
+            var fulfillmentRequest = new FulfillmentRequest()
+            {
+                ItemId = itemId,
+                Quantity = 1,
+                Source = FulfillmentRequestSource.REWARD
+            };
+            
             sdk.Platform.Fulfillment.FulfillItemOp
-                .SetBody(new FulfillmentRequest()
-                {
-                    ItemId = itemId,
-                    Quantity = 1,
-                    Source = FulfillmentRequestSource.REWARD
-                })
-                .Execute(@namespace, userId);
+                .Execute(fulfillmentRequest, @namespace, userId);
         }
     }
 }
