@@ -4,6 +4,10 @@
     {
       "matchPackageNames": ["mcr.microsoft.com/dotnet/aspnet", "mcr.microsoft.com/dotnet/sdk"],
       "allowedVersions": "<9.0"
+    },
+    {
+      "matchPackageNames": ["ubuntu"],
+      "allowedVersions": "<=22.04"
     }
   ]
 }
