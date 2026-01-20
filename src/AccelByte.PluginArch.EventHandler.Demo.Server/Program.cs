@@ -33,7 +33,7 @@ namespace AccelByte.PluginArch.EventHandler.Demo.Server
             if (appServiceName == null)
                 appServiceName = "extend-app-event-handler";
             else
-                appServiceName = $"extend-app-{appServiceName.Trim().ToLower()}";
+                appServiceName = $"extend-app-eh-{appServiceName.Trim().ToLower()}";
 
             Metrics.DefaultRegistry.SetStaticLabels(new Dictionary<string, string>()
             {
