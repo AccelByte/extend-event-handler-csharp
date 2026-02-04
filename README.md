@@ -154,10 +154,10 @@ for these two events are included. For other events, the AGS event spec files ar
       - Sample URL for AGS Shared Cloud customers: `https://spaceshooter.prod.gamingservices.accelbyte.io`
       - Sample URL for AGS Private Cloud customers:  `https://dev.accelbyte.io`
 
-   b. [Create a Game Namespace](https://docs.accelbyte.io/gaming-services/services/access/reference/namespaces/manage-your-namespaces/) if you don't have one yet. Keep the `Namespace ID`.
+   b. [Create a Game Namespace](https://docs.accelbyte.io/gaming-services/modules/foundations/identity-access/namespaces/manage-your-namespaces/) if you don't have one yet. Keep the `Namespace ID`.
 
 
-   c. [Create an OAuth Client](https://docs.accelbyte.io/gaming-services/services/access/authorization/manage-access-control-for-applications/#create-an-iam-client) with confidential client type with the following permissions. Keep the `Client ID` and `Client Secret`.
+   c. [Create an OAuth Client](https://docs.accelbyte.io/gaming-services/modules/foundations/identity-access/authorization/manage-access-control-for-applications/#create-an-iam-client) with confidential client type with the following permissions. Keep the `Client ID` and `Client Secret`.
          
    - For AGS Private Cloud customers:
       - `ADMIN:NAMESPACE:{namespace}:USER:*:FULFILLMENT [CREATE]`
@@ -350,7 +350,7 @@ After completing testing, the next step is to deploy your app to `AccelByte Gami
 
 1. **Create an Extend Event Handler app**
 
-   If you do not already have one, create a new [Extend Event Handler App](https://docs.accelbyte.io/gaming-services/services/extend/event-handler/getting-started-event-handler/#create-the-extend-app).
+   If you do not already have one, create a new [Extend Event Handler App](https://docs.accelbyte.io/gaming-services/modules/foundations/extend/event-handler/getting-started-event-handler/#create-the-extend-app).
 
    On the **App Detail** page, take note of the following values.
    - `Namespace`
@@ -382,4 +382,4 @@ After completing testing, the next step is to deploy your app to `AccelByte Gami
 
 ## Next Step
 
-Proceed by modifying this `Extend Event Handler` app template to implement your own custom logic. For more details, see [here](https://docs.accelbyte.io/gaming-services/services/extend/event-handler/how-to-listen-and-handle-different-ags-events/).
+Proceed by modifying this `Extend Event Handler` app template to implement your own custom logic. For more details, see [here](https://docs.accelbyte.io/gaming-services/modules/foundations/extend/event-handler/how-to-listen-and-handle-different-ags-events/).
