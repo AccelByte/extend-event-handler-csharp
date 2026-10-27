@@ -141,9 +141,9 @@ for these two events are included. For other events, the AGS event spec files ar
 
       - Use binary available [here](https://www.postman.com/downloads/)
 
-   f. [extend-helper-cli](https://github.com/AccelByte/extend-helper-cli)
+   f. [AGS CLI](https://github.com/AccelByte/accelbyte-ags-cli)
 
-      - Use binary available [here](https://github.com/AccelByte/extend-helper-cli/releases)
+      - Use binary available [here](https://github.com/AccelByte/accelbyte-ags-cli/releases)
 
    > :exclamation: In macOS, you may use [Homebrew](https://brew.sh/) to easily install some of the tools above.
 
@@ -365,10 +365,11 @@ After completing testing, the next step is to deploy your app to `AccelByte Gami
 
 2. **Build and Push the Container Image**
 
-   Use [extend-helper-cli](https://github.com/AccelByte/extend-helper-cli) to build and upload the container image.
+   Use [AGS CLI](https://github.com/AccelByte/accelbyte-ags-cli) to build and upload the container image.
 
    ```
-   extend-helper-cli image-upload --login --namespace <namespace> --app <app-name> --image-tag v0.0.1
+   ags auth login
+   ags extend image-upload --login --namespace <namespace> --app <app-name> --image-tag v0.0.1
    ```
 
    > :warning: Run this command from your project directory. If you are in a different directory, add the `--work-dir <project-dir>` option to specify the correct path.

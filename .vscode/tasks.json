@@ -63,12 +63,12 @@
     {
       "label": "Extend: Login to Docker",
       "type": "shell",
-      "command":  "extend-helper-cli",
+      "command":  "ags",
       "args": [
-        "dockerlogin",
+        "extend",
+        "docker-login",
         "--namespace", "${input:appNamespace}",
-        "--app", "${input:appName}",
-        "--login"
+        "--app", "${input:appName}"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -78,13 +78,14 @@
     {
       "label": "Extend: Create App",
       "type": "shell",
-      "command":  "extend-helper-cli",
+      "command":  "ags",
       "args": [
+        "extend",
         "create-app",
         "--namespace", "${input:appNamespace}",
         "--app", "${input:appName}",
-        "--scenario", "${input:appScenario}",
-        "--confirm",
+        "--json", { "value": "{\"scenario\":\"${input:appScenario}\"}", "quoting": "strong" },
+        "--yes",
         "--wait"
       ],
       "options": {
@@ -95,8 +96,9 @@
     {
       "label": "Extend: Build and Upload Image",
       "type": "shell",
-      "command":  "extend-helper-cli",
+      "command":  "ags",
       "args": [
+        "extend",
         "image-upload",
         "--namespace", "${input:appNamespace}",
         "--app", "${input:appName}",
@@ -112,12 +114,13 @@
     {
       "label": "Extend: Deploy",
       "type": "shell",
-      "command":  "extend-helper-cli",
+      "command":  "ags",
       "args": [
+        "extend",
         "deploy-app",
         "--namespace", "${input:appNamespace}",
         "--app", "${input:appName}",
-        "--image-tag", "${input:appImageTag}",
+        "--json", { "value": "{\"imageTag\":\"${input:appImageTag}\"}", "quoting": "strong" },
         "--wait"
       ],
       "options": {
@@ -128,8 +131,9 @@
     {
       "label": "Extend: Start App",
       "type": "shell",
-      "command":  "extend-helper-cli",
+      "command":  "ags",
       "args": [
+        "extend",
         "start-app",
         "--namespace", "${input:appNamespace}",
         "--app", "${input:appName}",
@@ -143,8 +147,9 @@
     {
       "label": "Extend: Stop App",
       "type": "shell",
-      "command":  "extend-helper-cli",
+      "command":  "ags",
       "args": [
+        "extend",
         "stop-app",
         "--namespace", "${input:appNamespace}",
         "--app", "${input:appName}",

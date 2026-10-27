@@ -5,7 +5,6 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG DOTNET_VERSION=8.0
-ARG EXTEND_HELPER_CLI_VERSION=0.0.9
 
 # Configure apt and install packages
 RUN apt-get update \
@@ -25,9 +24,11 @@ RUN apt-get update \
     && apt-get update \
     && apt-get -y install --no-install-recommends dotnet-sdk-${DOTNET_VERSION} \
     #
-    # Install Extend Helper CLI
-    && wget -O /usr/local/bin/extend-helper-cli https://github.com/AccelByte/extend-helper-cli/releases/download/v${EXTEND_HELPER_CLI_VERSION}/extend-helper-cli-linux_amd64 \
-    && chmod +x /usr/local/bin/extend-helper-cli \
+    # Install AGS CLI. CARGO_HOME puts the binary in /usr/local/bin, which is
+    # already on PATH for every user, so no shell profile has to change.
+    && wget --https-only -qO /tmp/ags-installer.sh https://github.com/AccelByte/accelbyte-ags-cli/releases/latest/download/accelbyte-ags-cli-installer.sh \
+    && CARGO_HOME=/usr/local ACCELBYTE_AGS_CLI_NO_MODIFY_PATH=1 sh /tmp/ags-installer.sh \
+    && rm /tmp/ags-installer.sh \
     #
     # Clean up
     && apt-get autoremove -y \
